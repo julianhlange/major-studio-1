@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+
+    <body>
+        <script>
+            d3.select('body')
+                .append('svg')
+                .attr('width', window.innerWidth)
+                .attr('height', 500);
+            
+            var svg = d3.select('svg');
+            
+            svg.append('circle')
+                .attr('r', 20)
+                .attr('cx', 200)
+                .attr('cy', 75);
+                
+            svg.append('rect')
+                .attr('x', 300)
+                .attr('y', 50)
+                .attr('width', 50)
+                .attr('height', 50);
+                
+            svg.append('polygon')
+                // next line shifts x coordinate of polygon by 400 px
+                .attr('transform', 'translate(400, 0)')
+                // if want to tranform in two ways (e.g., translate and scale):
+                // .attr('transform', 'translate(120, 0) scale(2)')
+                .attr('points', '60,30 100,50 100,90 60,110 20,90 20,50');
+                // note that if there were more polygons, could apply to *all* polygons by putting above body:
+                // <style type="text/css">
+                    // polygon
+                    //    transform: translate(120px, 0);
+                // </style>
+                
+        </script>
+    </body>
+</html>

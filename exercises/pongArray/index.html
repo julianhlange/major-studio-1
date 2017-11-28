@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--p5 core library CDN-->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/p5.min.js"></script>
+
+        <script>
+            // set up global variables
+            var x = [],            // set up arrays for each variable
+                y = [],
+                xSpeed = [],
+                ySpeed = [];
+
+            var paddleColor;    // do separate sections for different kinds of variables (arrays above and "single" variables here)
+            var score = 0;
+            var quantity = 1000;  // to put 1000 balls into the game
+
+            // p5 calls setup() exactly once when the canvas loads
+            function setup() {
+                createCanvas(500, 500);
+                rectMode(CENTER);
+                for (var i=0; i<quantity; i++) {
+                    x[i] = random(width);
+                    y[i] = random(height);
+                    ySpeed[i] = random(-2.5, 2.5);
+                    xSpeed[i] = random(-2.5, 2.5);
+                }
+
+                // define paddle color
+                paddleColor = color(255, 255, 0);   // this defines initial paddle color as yellow (but redefine randomly below)
+            }
+
+            function draw() {
+                background('lightgray');
+                fill('black');
+
+                for (var i=0; i<quantity; i++) {
+                    // position update
+                    x[i] = x[i] + xSpeed[i];
+                    y[i] = y[i] + ySpeed[i];
+
+                    // horizontal boundaries
+                    if (x[i] > width-5 || x[i] < 5){
+                        xSpeed[i] = xSpeed[i] * (-1);
+                    }
+
+                    // top boundary
+                    if (y[i] < 5){
+                        ySpeed[i] = ySpeed[i] * (-1);
+                    }
+
+                    // paddle boundary
+                    if (y[i] > height-35 && abs(mouseX-x[i]) < width/12 && y[i] < height-30 + ySpeed[i]) {
+                        ySpeed[i] = ySpeed[i] * (-1);
+                        // fun items
+                        xSpeed[i] *= 1.2;
+                        ySpeed[i] *= 1.2;
+                        paddleColor = color(random(255), 0, 0);
+                        score++;
+                    }
+
+                    ellipse(x[i], y[i], 10, 10);
+                }
+                fill(paddleColor);
+                rect(mouseX, 500-30, 500/6, 10, 5);
+                fill('black');
+                text(score, mouseX, height-25);
+            }
+            void mouse
+        </script>
+    </head>
+    <body>
+
+    </body>
+</html>

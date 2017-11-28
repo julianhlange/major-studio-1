@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bootstrap Grid</title>
+        <link rel="stylesheet" href="bootstrap.min.css">
+        <!--use line above or line below-->
+        <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">-->
+        <style>
+
+            body {
+                background-color: lightgray;
+            }
+
+            /*the following three lines overwrite the padding that shows up for the container*/
+            /*.container {*/
+            /*    max-width: 100%;    */
+            /*}*/
+
+            div {
+                /*background-color: pink;*/
+                /*border: 1px solid white;*/
+                border-top: 1px solid black;
+                min-height: 2em;
+            }
+
+            div:hover {
+                border-top: 2px solid black;
+            }
+
+            /*to focus only on those that have div inside a div inside a div*/
+            div > div > div:hover {
+                background-color: snow;
+                font-weight: bolder;
+                font-size: larger;
+            }
+            
+            footer {
+                position: fixed;
+                width: 100%;
+                bottom: 0;
+                min-height: 100px;
+                box-shadow: 0px 0px 25px white;
+            }
+            
+            footer div {
+                border: 0;
+                font-size: small;
+                padding: 1em;
+            }
+
+        </style>
+    </head>
+    <body>
+        <!--Container-->
+        <div class='container'>
+            <div class='row'>Default to 12</div>
+            <div class='row'>
+                <div class='col-3'>col-3</div>
+            </div>
+            <div class='row'>
+                <div class='col-sm-12 col-md-10 col-lg-8 col-xl-6'>col-sm-12 col-md-10 col-lg-8 col-xl-6</div>
+            </div>
+            <div class='row'>
+                <div class='col-lg-4 col-md-4 col-sm-6'>col-lg-4 col-md-4 col-sm-6</div>
+                <div class='col-lg-4 col-md-8 col-sm-6'>col-lg-4 col-md-8 col-sm-6</div>
+                <div class='col-lg-4 d-lg-block d-none'>col-lg-4 d-lg-block d-none</div>
+                <!--use line above to show col-lg but not show col-md or col-sm or co-xs-->
+                <!--see also Daniel code adding in an SVG element; there is also code in up in style sction-->
+            </div>
+        </div>
+        <!--because the following is not in a container, the footer is the full width (without padding)-->
+        <footer>
+            <div class='row'>
+                <div class='col-sm-3'></div>
+                <div class='col-sm-2'>Key</div>
+                <div class='col-sm-2'>Source</div>
+                <div class='col-sm-2'>Credits</div>
+                <div class='col-sm-3'></div>
+            </div>
+        </footer>
+    </body>
+</html>

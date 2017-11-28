@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="//d3js.org/d3.v4.min.js"></script>
+        <!--the following two lines are from mapbox homepage, then scroll down Develop with your map and click Start developing,
+        then click on JS Web, then click on Use the Mapbox CDN-->
+        <script src='https://api.mapbox.com/mapbox-gl-js/v0.40.0/mapbox-gl.js'></script>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v0.40.0/mapbox-gl.css' rel='stylesheet' />
+        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.12.0/mapbox-gl.js'></script>
+        <style type="text/css">
+            html, body, #wrapper {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            
+            #map {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            
+            svg {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+            
+        </style>
+    </head>
+
+    <body>
+        <!--in using Mapbox, make a div inside a div-->
+        <div id='wrapper'>
+            <div id='map'></div>
+        </div>
+        <script>
+        // compared with mapboxGL, here we have moved the mapboxgl up to the top and out of draw function so that the map loads immediately
+            mapboxgl.accessToken = 'pk.eyJ1IjoianVsaWFuaGxhbmdlIiwiYSI6ImNqOXp5bmhhaDhsMGgyd2xnMTBjYWliYXcifQ.b9xJ5lCXELbFIt7Ajyizww';
+                var map = new mapboxgl.Map({
+                    container: 'map',
+                    style: 'mapbox://styles/mapbox/bright-v9',  // edit last part of path for different styles. e.g., streets-v9; see https://www.mapbox.com/maps/
+                    center: [18.2812, 9.1021], // 9.1021° N, 18.2812° E this is the center of Africa
+                    zoom: 4 // this is standard zoom setting on full screen
+                });
+            
+            d3.json('africa.geo.json', function(error, data) {
+                draw(data);
+            });
+
+            function draw(geojson) {
+                
+                // this next line adds +/- navigation on top right
+                map.addControl(new mapboxgl.Navigation());
+                
+                var container = map.getCanvasContainer();
+                var svg = d3.select(container).append('svg');
+                
+                var transform = d3.geoTransform({point: projectPoint});
+                var path = d3.geoPath().projection(transform); // // https://github.com/d3/d3-3.x-api-reference/blob/master/Geo-Paths.md
+                
+                var featureElement = svg.selectAll('path')
+                    .data(geojson.features) // use child called 'features' from the africa.geo.json file
+                    .enter()
+                    .append('path')
+                    .attr('d', d3.geoPath().projection(transform))
+                    .attr('stroke', 'none')
+                    .attr('fill', 'blue')
+                    .attr("fill-opacity", 0.5)
+                    .on('mouseover', function(d) {
+                        console.log(d);
+                        d3.select(this).attr('fill', 'lightgray');
+                    });
+                
+                svg.append("text")
+                    .attr('id', 'hover');
+                    
+                function update() {
+                    featureElement.attr('d', path);
+                }
+                
+                map.on("viewreset", update)
+                map.on("movestart", function(){
+            		svg.classed("hidden", true); // https://github.com/d3/d3-selection/blob/master/README.md#selection_classed
+            	});
+                map.on("rotate", function(){
+            		svg.classed("hidden", true);
+            	});
+                map.on("moveend", function(){
+            		update();
+            		svg.classed("hidden", false);
+            	})
+
+                function projectPoint(lon, lat) {
+                    var point = map.project(new mapboxgl.LngLat(lon, lat));
+                    this.stream.point(point.x, point.y); // https://github.com/d3/d3-geo/blob/master/README.md#transforms
+                }
+            }
+        </script>
+
+    </body>
+
+</html>

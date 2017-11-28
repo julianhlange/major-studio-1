@@ -1,0 +1,41 @@
+* {
+    font-family: 'Abel';
+    word-spacing: 1px;
+}
+
+* {
+    font-family: 'Libre Franklin';
+    word-spacing: 1px;
+}
+
+h1 {
+    font-family: 'Abel';
+    line-height: 1em;
+    text-align: center
+}
+
+h5 {
+    font-family: 'Libre Franklin';
+    line-height: 1em;
+    text-align: center
+}
+
+p {
+    font-family: 'Abel';
+    line-height: 1em;
+    padding: 10px 100px 0px 100px;
+    text-align: justify;
+}
+
+#source {
+    font-size: 12px
+}
+
+#me {
+    text-align: right;
+    font-size: larger
+}
+
+.domain {
+    opacity: 0.5;
+}

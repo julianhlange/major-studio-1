@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--p5 core library CDN-->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/p5.min.js"></script>
+
+        <script>
+            // set up global variables
+            var x, y, xSpeed, ySpeed, paddleColor;
+            var score = 0;                  // set to 0 initially so that it shows up in bar; if put it in line above without value, just wouldn't show up
+
+            // p5 calls setup() exactly once when the canvas loads
+            function setup() {
+                createCanvas(500, 500);     // createCanvas(width, height)
+                rectMode(CENTER);           // added this near end of exercise: this centers mouse to middle of paddle
+                // note that if put lines 14 & 15 into draw function below, then the ball would show up randomly 60 times per second
+                x = random(width);          // can call to width here instead of number, because width was set up in createCanvas line
+                y = random(height);         // can call to height here instead of number, because width was set up in createCanvas line
+                xSpeed = random(-2.5, 2.5); // to set speed randomly at which ball moves in x dimension; + or - because ball can start in any direction
+                ySpeed = random(-2.5, 2.5); // to set speed randomly at which ball moves in y dimension; + or - because ball can start in any direction
+
+                // define paddle color
+                paddleColor = color(255, 255, 0);   // this defines initial paddle color as yellow (but redefine randomly below)
+            }
+
+            function draw() {
+                background('lightgray');
+                fill('black');          // everything will be black until call new fill for rect
+
+                // position update
+                x = x + xSpeed;         // could also write this as: x += xSpeed
+                y = y + ySpeed;         // could also write this as: y += ySpeed
+
+                // boundaries; want ball to bounce in opposite direction when hits wall
+                // // right boundary
+                // if (x > width - 5){
+                //     xSpeed = xSpeed * (-1);     // could also write as xSpeed *= -1
+                // }
+                // // left boundary
+                // if (x < 5){
+                //     xSpeed = xSpeed * (-1);     // could also write as xSpeed *= -1
+                // }
+                // combine left and right boundary lines 29-36
+                if (x > width-5 || x < 5){
+                    xSpeed = xSpeed * (-1);     // could also write as xSpeed *= -1
+                }
+
+                // top boundary
+                if (y < 5){
+                    ySpeed = ySpeed * (-1);     // could also write as ySpeed *= -1
+                }
+
+                // paddle boundary
+                if (y > height-35 && abs(mouseX-x) < width/12 && y < height-30 + ySpeed) {
+                    ySpeed = ySpeed * (-1);     // could also write as ySpeed *= -1
+                    // fun items
+                    xSpeed *= 1.2;      // speeds up at 20%
+                    ySpeed *= 1.2;      // speeds up at 20%
+                    paddleColor = color(random(255), 0, 0);     // this changes the paddle color that was initially set to random shades of red
+                    score++;        // to keep score of number of hits within paddle
+                }
+
+                ellipse(x, y, 10, 10);
+                fill(paddleColor);      // all things drawn AFTER fill will be that color
+                rect(mouseX, 500-30, 500/6, 10, 5);      // to set pong bar: rect(X position, Y position, width, height, radius of rounding)
+                fill('black');
+                text(score, mouseX, height-25);     // adds score for number of hits to paddle
+            }
+        </script>
+    </head>
+    <body>
+
+    </body>
+</html>

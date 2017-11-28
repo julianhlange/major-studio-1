@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--p5js download: https://p5js.org/download/-->
+    <!--Content Delivery Network (CDN): https://cdnjs.com/libraries/p5.js-->
+    <title>Word Frequency</title>
+    <!--p5 core library, minified-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.13/p5.min.js" type="text/javascript"></script>
+    <!--p5 interaction with the DOM-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.13/addons/p5.dom.min.js" type="text/javascript"></script>
+
+    <script>
+        var dictionary = [];        // creates the dictionary
+        var wordCount = [];
+        var textX = 100;
+        
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            loadStrings('sotu.txt', analyze);
+        }
+        
+        function analyze(sotu) {
+            // console.log(sotu);       // uncomment this to log entire text; see that text is 89 paragraphs
+            
+            sotu.forEach(function(phrases){
+                // console.log(phrases);        // uncomment this to log paragraphs
+                
+// UPDATE 1     // remove special characters
+                // RegEx https://regexr.com/
+                // next two lines are two approaches for removing special characters
+                //      first one is replace selected list with blank
+                //      second one removes everythign except words (w) and whitespace (s)
+                // phrases = phrases.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, ''); // list of special charecters to replace
+                phrases = phrases.replace(/[^\w\s]/gi, '');  // The caret (^) character is the negation of the set [...], gi is global and case-insensitive and the safelist in this example is digits, word characters (\w), and whitespace (\s)
+// end UPDATE 1
+
+                var words = phrases.split(' ');
+                
+                words.forEach(function(word) {
+                    // console.log(word);        // uncomment this to log words
+                    
+                    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+                    wordCount = dictionary.filter(function(element) {       // filter function returns an array or nothing
+                        return element.word == word;
+                    })
+                    
+                    if (wordCount.length)       // this section: 
+                        wordCount[0].count++;   // if word is already present, add one to count 
+                    else                        // if word is not already present, add word to dictionary and add one to count
+                        dictionary.push({word: word, count: 1});      // in this line, the second 'word' refers to actual wordin text
+                })
+
+// UPDATE 2     // sort based on word frequency                
+                // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+                dictionary.sort(function(a, b) {
+                    return b.count - a.count;       // sort in order of descending frequency
+                });
+// end UPDATE 2
+
+            });
+            
+            console.log(dictionary);    // to see it in console (run in apache, then view console)
+            display();                  // see function below
+        }
+        
+        
+        function display() {
+            background(255);
+            translate(textX, windowHeight/2);
+            
+            dictionary.forEach(function(element) {
+                textSize(element.count * 2);
+                text(element.word+'', 0, 0);       // in dictionary, elements are each word
+                
+                var txtWidth = textWidth(element.word);
+                translate(txtWidth, 0);
+            })
+        }
+        
+        function mouseDragged() {           // mouseDragged sets the window shift to be on mouse click-and-drag (as opposed to scrolling)
+            textX += mouseX - pmouseX;
+            display();
+        }
+    
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

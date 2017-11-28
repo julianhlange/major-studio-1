@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+
+    <body>
+        <script>
+            d3.select('body')                               // starting point
+                .append('svg')                              // add svg to body
+                .attr('width', window.innerWidth)           // give attribute to svg
+                .attr('height', window.innerHeight);        // give attribute to svg
+
+            var svg = d3.select('svg');
+
+            d3.tsv('groceries.tsv', function(error, data) {
+
+                console.log(data);
+
+                // this  section (lines 21 to 33) and next section (lines 35 to 49) give same output, although they are offset on y-axis because of differences in .attr('y',..)
+                data.forEach(function(d, i) {   // forEach is a function with callback to d and i (d and i are standard): d is for data; i is 1, 2, 3, 4, 5, ...
+                    svg.append('text')          // this appends as text
+                        .text(d.amount + ' | ' + d.unit + ' | ' + d.item + ' | ' + d.source)
+                        .attr('x', window.innerWidth/2)     // this positions each line of text in middle (x=window.innerWidth/2)
+                        .attr('y', i * 20 + 20)             // this positions each line in a new y-coordinate
+                        .style('text-anchor', 'middle')
+                        .style('fill', function() {
+                            if (d.source == 'store')
+                                return 'rgb(0, 255, 0)';
+                            else
+                                return 'darkgray';
+                        });
+                });
+
+                // this section is new way of doing what we did above, which we actually did in a previous class and edited with this next section
+                svg.selectAll('.item')      // selectAll instead of select so that take everything in array and not just one entry in array
+                    .data(data)             // .data is a d3-reserved method
+                    .enter()                // .enter is a d3-reserved method
+                    .append('text')
+                    .text(function(d, i) { return i + ') ' + d.amount + ' | ' + d.unit + ' | ' + d.item + ' | ' + d.source; })
+                    .attr('x', window.innerWidth/2)
+                    .attr('y', function(d, i) { return (i+1) * 30; })
+                    .style('text-anchor', 'middle')
+                    .style('fill', function(d) {
+                            if (d.source == 'store')
+                                return 'rgb(0, 255, 0)';
+                            else
+                                return 'darkgray';
+                            });
+
+            });
+        </script>
+    </body>
+</html>

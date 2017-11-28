@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Dynamics assignment</title>
+    <link href="https://fonts.googleapis.com/css?family=Abel" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Libre Franklin" type="text/css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+        svg {
+            font-family: "Libre Franklin";
+        }
+        
+        .axis text {
+            font: 16 pt;
+        }
+        
+        .axis path, .axis line {
+            fill: none;
+            shape-rendering: crispEdges;
+        }
+        
+    </style>
+</head>
+<body>
+    <script>
+    
+    var outerWidth = 600;
+    var outerHeight = 600;
+    var margin = { top: 50, right: 50, bottom: 50, left: 50 };
+    var innerWidth = outerWidth - margin.right - margin.left
+    var innerHeight = outerWidth - margin.top - margin.bottom
+    
+    var circleRadius = 5;
+    var xColumn = "X2010";      // by setting the columns to variables, I can
+    var yColumn = "X2014";      // more easily adapt code at a later date
+    
+    d3.csv("trial20102014rotated.csv", function (error, data) {
+        if (error) throw error;
+        data.forEach(function (d) {
+            d[xColumn] = parseFloat(d[xColumn]);
+            d[yColumn] = parseFloat(d[yColumn]);
+            d.countryName = d.countryName;
+            return d;
+        });
+        plot(data);
+    });
+    
+    function plot(data) {
+        // console.log(data);
+
+        var width = innerWidth;
+        var height = innerHeight;
+        
+        var maxX = 10 + Math.ceil(d3.max(data, function(d) { return d[xColumn] })/10) * 10;
+        var maxY = 10 + Math.ceil(d3.max(data, function(d) { return d[yColumn] })/10) * 10;
+        var max = Math.max(maxX, maxY);
+        // console.log(max);
+        
+        var scaleX = d3.scaleLinear()
+            .range([0, width])
+            .domain([10, max]);
+        var scaleY = d3.scaleLinear()
+            .range([height, 0])
+            .domain([-10, 10]);
+            
+        var svg = d3.select("body").append("svg")
+            .attr("width", outerWidth)
+            .attr("height", outerHeight)
+            // .attr('transform', 'translate(200,100)rotate(45)')
+            .append("g");
+        
+        var g = svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        
+        var line0 = g.append("line")
+            .style("stroke", "lightgrey")
+            .attr("x1", 0)
+            .attr("y1", 250)
+            .attr("x2", width)
+            .attr("y2", 250);
+        
+        var line45 = g.append("line")
+            .style("stroke", "lightgrey")
+            .attr("x1", 0)
+            .attr("y1", 250)
+            .attr("x2", width)
+            .attr("y2", 750);
+        
+        var lineneg45 = g.append("line")
+            .style("stroke", "lightgrey")
+            .attr("x1", 0)
+            .attr("y1", 250)
+            .attr("x2", width)
+            .attr("y2", -250);
+
+        var xAxis = d3.axisBottom(scaleX).ticks(4);
+        var yAxis = d3.axisLeft(scaleY).ticks(4);
+        
+        // x axis
+        // svg.append("g")
+        //   .attr("class", "x axis")
+        //   .attr("transform", "translate(0," + height + ")")
+        //   .call(xAxis);
+        // svg.append("text")
+        //     .style("text-anchor", "end")
+        //     .attr("x", width)
+        //     .attr("y", height - 8)
+        //     .text("Gini score in 2010");
+
+        // y axis
+        // svg.append("g")
+        //     .attr("class", "y axis")
+        //     .call(yAxis);
+        // svg.append("text")
+        //     .attr("transform", "rotate(-90)")
+        //     .attr("y", 6)
+        //     .attr("dy", "1em")
+        //     .style("text-anchor", "end")
+        //     .text("Gini score in 2014");
+            
+        var dots = g.selectAll("circle")
+            .data(data)
+            .enter().append("circle")
+            .attr("r", circleRadius)
+            .attr("opacity", 0.5)
+            .style("fill", "#4292c6");
+             
+        dots
+            .attr("cx", function (d) {return scaleX(d[xColumn]); })
+            .attr("cy", function (d) {return scaleY(d[yColumn]); })
+            .on("mouseover", function (d, i) {
+                d3.select("svg").append("text")
+                .attr("x", d3.select(this).attr("cx"))
+                .attr("y", d3.select(this).attr("cy"))
+                .text(function() {
+                    return [d.countryName]
+                })
+                .attr('font', 'Libre Franklin')
+                .attr('font-size', '12px')
+                .style('fill', 555555)
+                .transform("translate(-10,-10)")
+            });
+            
+        // "increased" and "decreased" labels
+        svg.append("text")
+
+            .attr("x", 450)
+            .attr("y", 400)
+            .attr("dy", "0em")
+            .text("Gini score decreased")
+            .style('fill', 555555)
+            .attr('font', 'Libre Franklin')
+            .attr('font-size', '12px')
+            // .attr('font-style', 'italic');
+        svg.append("text")
+            .attr("x", 450)
+            .attr("y", 400)
+            .attr("dy", "1em")
+            .text("from 2010 to 2014")
+            .style('fill', 555555)
+            .attr('font', 'Libre Franklin')
+            .attr('font-size', '12px')
+            // .attr('font-style', 'italic');
+        svg.append("text")
+            .attr("x", 450)
+            .attr("y", 200)
+            .attr("dy", "0em")
+            .text("Gini score increased")
+            .style('fill', 555555)
+            .attr('font', 'Libre Franklin')
+            .attr('font-size', '12px')
+            // .attr('font-style', 'italic');
+        svg.append("text")
+            .attr("x", 450)
+            .attr("y", 200)
+            .attr("dy", "1em")
+            .text("from 2010 to 2014")
+            .style('fill', 555555)
+            .attr('font', 'Libre Franklin')
+            .attr('font-size', '12px')
+            // .attr('font-style', 'italic');
+
+    // next sections are to make arrows
+        svg.append("line")
+            .style("stroke", 555555)
+            .attr("x1", 500)
+            .attr("y1", 225)
+            .attr("x2", 500)
+            .attr("y2", 275);
+        svg.append("line")
+            .style("stroke", 555555)
+            .attr("x1", 500)
+            .attr("y1", 225)
+            .attr("x2", 510)
+            .attr("y2", 235);
+        svg.append("line")
+            .style("stroke", 555555)
+            .attr("x1", 500)
+            .attr("y1", 225)
+            .attr("x2", 490)
+            .attr("y2", 235);
+
+        svg.append("line")
+            .style("stroke", 555555)
+            .attr("x1", 500)
+            .attr("y1", 375)
+            .attr("x2", 500)
+            .attr("y2", 325);
+        svg.append("line")
+            .style("stroke", 555555)
+            .attr("x1", 490)
+            .attr("y1", 365)
+            .attr("x2", 500)
+            .attr("y2", 375);
+        svg.append("line")
+            .style("stroke", 555555)
+            .attr("x1", 500)
+            .attr("y1", 375)
+            .attr("x2", 510)
+            .attr("y2", 365);
+    };
+    </script>
+</body>
+</html>

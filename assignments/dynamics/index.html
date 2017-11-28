@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!--<p id="g1"></p>-->
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Libre Franklin" type="text/css" rel="stylesheet">
+</head>
+<head>
+    <style>
+        svg {
+            font-family: "Libre Franklin";
+            
+        }
+
+        #scatter {margin-left:auto; margin-right:auto; display:block;}
+        
+        body {
+            font-family: "Myriad Pro";
+            line-height: 1.8em;
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        p {
+            line-height: 1em;
+            font-size: 12px;
+            padding: 10px 100px 0px 100px;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+
+    <h1> A tool for displaying year-to-year changes in the Gini coefficient</h1>
+    <p> The Gini coefficient is a measure of inequality. The coeeficient can change in
+response to policy decisions, national and international events, and
+economic factors.<br><br>Line charts that visualize those changes for many states at a time
+are challenging to read. The goal of this project is to create a
+tool for displaying changes in the Gini coefficient between any two (consecutive or non-consecutive)
+years. <br><br> This example shows the changes in Gini coefficients from 2010 to 2014.
+Note that only a subset of nations have Gini values recorded in both years; the others
+are not shown.</p>
+    <script src="//d3js.org/d3.v4.min.js"></script>
+
+    <script>
+        // adapted from http://blockbuilder.org/EfratVil/d956f19f2e56a05c31fb6583beccfda7
+        
+        var xColumn = "X2010";      // by setting the columns to variables, I can
+        var yColumn = "X2014";      // more easily adapt code at a later date
+    
+        d3.csv("trial20102014.csv", function(error, data) {
+            if (error) throw error;
+            data.forEach(function(d) {
+                 d.X2010 = +d.X2010;
+                 d.X2014 = +d.X2014;
+                 d.countryName = d.countryName;
+            });
+            plot(data)
+        });
+
+        function plot(data) {
+            // console.log(data)
+        var margin = { top:50, right:50, bottom:50, left:50 };
+        width = 600 - margin.left - margin.right,
+        height = 600 - margin.top - margin.bottom;
+
+        var tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        var x = d3.scaleLinear()
+              .range([0, width])
+              .nice();
+
+        var y = d3.scaleLinear()
+            .range([height, 0]);
+
+        var xAxis = d3.axisBottom(x).ticks(4),
+            yAxis = d3.axisLeft(y).ticks(4);
+
+        var brush = d3.brush().extent([[0, 0], [width, height]]).on("end", brushended),
+            idleTimeout,
+            idleDelay = 350;
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var clip = svg.append("defs").append("svg:clipPath")
+            .attr("id", "clip")
+            .append("svg:rect")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("x", 0)
+            .attr("y", 0);
+
+        // var xExtent = d3.extent(data, function (d) { return d.x; });
+        // var yExtent = d3.extent(data, function (d) { return d.y; });
+        // x.domain(d3.extent(data, function (d) { return d.x; })).nice();
+        // y.domain(d3.extent(data, function (d) { return d.y; })).nice();
+        x.domain([20, 60]);
+        y.domain([20, 60]);
+
+        // 45 degree line
+        svg.append("line")
+            .style("stroke", "lightgrey")
+            // .attr("stroke-dasharray", "2,2")
+            .attr("x1", 0)
+            .attr("y1", height)
+            .attr("x2", width)
+            .attr("y2", 0);
+
+        var scatter = svg.append("g")
+             .attr("id", "scatterplot")
+            //  .attr("clip-path", "url(#clip)")
+            //  .attr("transform", function() {
+            //     return d3.svg.transform()
+            //     .translate(200, 100)
+            //     .rotate(-45)
+            //     .translate(-d3.select(this).attr("width")/2, -d3.select(this).attr("height")/2)();
+            // })
+            ;
+
+        scatter.selectAll(".dot")
+            .attr("id", "scatter")
+            .data(data)
+            .enter().append("circle")
+            .attr("class", "dot")
+            .attr("r", 5)
+            .attr("cx", function (d) { return x(d.X2010); })
+            .attr("cy", function (d) { return y(d.X2014); })
+            .attr("opacity", 0.5)
+            .style("fill", "#4292c6")
+            .on("mouseover", function (d, i) {
+                d3.select("svg").append("text")
+                .attr("x", d3.select(this).attr("cx"))
+                .attr("y", d3.select(this).attr("cy"))
+                .text(function() {
+                    return [d.countryName]
+                })
+                .attr('font', 'Libre Franklin')
+                .attr('font-size', '12px')
+                .style('fill', 555555)
+            })
+            // .on("mouseout", function (d, i) {
+            //     d3.select("svg").append("text")
+            //     .attr("x", d3.select(this).attr("cx"))
+            //     .attr("y", d3.select(this).attr("cy"))
+            //     .text(function() {
+            //         return ["nothing"]
+            //     })
+            //     .attr('font', 'Libre Franklin')
+            //     .attr('font-size', '12px')
+            // })
+            ;
+
+        // x axis
+        svg.append("g")
+           .attr("class", "x axis")
+           .attr('id', "axis--x")
+           .attr("transform", "translate(0," + height + ")")
+           .call(xAxis);
+        svg.append("text")
+            .style("text-anchor", "end")
+            .attr("x", width)
+            .attr("y", height - 8)
+            .text("Gini score in 2010");
+
+        // y axis
+        svg.append("g")
+            .attr("class", "y axis")
+            .attr('id', "axis--y")
+            .call(yAxis);
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", "1em")
+            .style("text-anchor", "end")
+            .text("Gini score in 2014");
+
+        // increase and decrease labels
+        svg.append("text")
+            // .attr("transform", "rotate(-45)")
+            .attr("x", 350)
+            .attr("y", 0)
+            .attr("dy", "0em")
+            .text("Gini score increased")
+            .style('fill', 555555)
+            .attr('font', 'Libre Franklin')
+            .attr('font-size', '12px')
+            // .attr('font-style', 'italic');
+        svg.append("text")
+            // .attr("transform", "rotate(-45)")
+            .attr("x", 350)
+            .attr("y", 0)
+            .attr("dy", "1em")
+            .text("from 2010 to 2014")
+            .style('fill', 555555)
+            .attr('font', 'Libre Franklin')
+            .attr('font-size', '12px')
+            // .attr('font-style', 'italic');
+        svg.append("text")
+            .attr("x", 430)
+            .attr("y", 100)
+            .attr("dy", "0em")
+            .text("Gini score decreased")
+            .style('fill', 555555)
+            .attr('font', 'Libre Franklin')
+            .attr('font-size', '12px')
+            // .attr('font-style', 'italic');
+        svg.append("text")
+            .attr("x", 430)
+            .attr("y", 100)
+            .attr("dy", "1em")
+            .text("from 2010 to 2014")
+            .style('fill', 555555)
+            .attr('font', 'Libre Franklin')
+            .attr('font-size', '12px')
+            // .attr('font-style', 'italic');
+
+    // next sections are to make arrows
+        svg.append("line")
+            .style("stroke", 555555)
+            .attr("x1", 425)
+            .attr("y1", 25)
+            .attr("x2", 445)
+            .attr("y2", 45);
+        svg.append("line")
+            .style("stroke", 555555)
+            .attr("x1", 425)
+            .attr("y1", 25)
+            .attr("x2", 425)
+            .attr("y2", 30);
+        svg.append("line")
+            .style("stroke", 555555)
+            .attr("x1", 425)
+            .attr("y1", 25)
+            .attr("x2", 430)
+            .attr("y2", 25);
+
+        svg.append("line")
+            .style("stroke", 555555)
+            .attr("x1", 455)
+            .attr("y1", 55)
+            .attr("x2", 475)
+            .attr("y2", 75);
+        svg.append("line")
+            .style("stroke", 555555)
+            .attr("x1", 475)
+            .attr("y1", 70)
+            .attr("x2", 475)
+            .attr("y2", 75);
+        svg.append("line")
+            .style("stroke", 555555)
+            .attr("x1", 470)
+            .attr("y1", 75)
+            .attr("x2", 475)
+            .attr("y2", 75);
+
+        scatter.append("g")
+        .attr("class", "grid")
+        .attr("transform", "translate(0," + height + ")")
+        .call(make_x_axis()
+            .tickSize(-height, 0, 0)
+            .tickFormat("")
+        );
+
+        scatter.append("g")
+        .attr("class", "grid")
+        .call(make_y_axis()
+            .tickSize(-width, 0, 0)
+            .tickFormat("")
+        );
+
+        scatter.append("g")
+            .attr("class", "brush")
+            .call(brush);
+
+        function brushended() {
+
+            var s = d3.event.selection;
+            if (!s) {
+                if (!idleTimeout) return idleTimeout = setTimeout(idled, idleDelay);
+                x.domain(d3.extent(data, function (d) { return d.x; })).nice();
+                y.domain(d3.extent(data, function (d) { return d.y; })).nice();
+            } else {
+
+                x.domain([s[0][0], s[1][0]].map(x.invert, x));
+                y.domain([s[1][1], s[0][1]].map(y.invert, y));
+                scatter.select(".brush").call(brush.move, null);
+            }
+            zoom();
+        }
+}
+    </script>
+</body>
+</html>
