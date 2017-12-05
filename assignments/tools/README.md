@@ -17,3 +17,7 @@ Created by Julian H. Lange with data from the following sources:
 
 * Gini data are from UNU-WIDER World Income Inequality Database revision 3.4 (WIID3.4). Retrieved November 2017 from [https://www.wider.unu.edu](https://www.wider.unu.edu/project/wiid-world-income-inequality-database).
 * Data were curated with R version 3.3.1. Retrieved from [http://www.r-project.org](http://www.r-project.org).
+
+![previewsub1.png](previewsub1.png)
+![preview.png](preview.png)
+![previewsub2.png](previewsub2.png)
