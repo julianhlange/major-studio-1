@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script
+			  src="https://code.jquery.com/jquery-3.2.1.min.js"
+			  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+			  crossorigin="anonymous"></script>
+	    <link href="c3.js" rel="stylesheet">
+	    <link href="c3.css" rel="stylesheet">
+	    <!--Bootstrap-->
+	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	    <!--fonts-->
+	    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Libre Franklin" type="text/css" rel="stylesheet">
+    </head>
+    
+    <style type="text/css">
+    
+        body {
+            font-family: 'PT Sans', sans-serif;
+            line-height: 1.8em;
+        }
+        
+        #title {
+            text-align: left;
+            line-height: 0.9em;
+            font-size: 36px;
+            padding: 10px 5px 0px 10px;
+            font-style: bold;
+        }
+        
+        #intro {
+            line-height: 1.1em;
+            font-size: 16px;
+            padding: 10px 5px 0px 10px;
+            text-align: left;
+        }
+        
+        #source {
+            line-height: 1.1em;
+            font-size: 14px;
+            padding: 10px 5px 0px 10px;
+            text-align: left;
+        }
+        
+        #selectText {
+            line-height: 0em;
+            font-family: 'PT Sans', sans-serif;
+            margin-left: 5%;
+            font-size: 20px;
+            display: inline-block;
+        }
+        
+        #startYear {
+            font-family: 'PT Sans', sans-serif;
+            margin-left: 5%;
+            font-size: 20px;
+            display: inline-block;
+        }
+        
+        #endYear {
+            font-family: 'PT Sans', sans-serif;
+            font-size: 20px;
+            display: inline-block;
+        }
+        
+        #submitButton {
+            font-family: 'PT Sans', sans-serif;
+            font-size: 20px;
+            display: inline-block;
+            margin-bottom: 2cm;
+        }
+        
+        #plot {
+            /*width: 1700px;*/
+            margin-left: 5%;
+            text-align: left;
+        }
+        
+        .axis-title {
+            font-family: "Libre Franklin";
+            font-size: 1.8em;
+        }
+        
+        .inequality {
+            font-family: "Libre Franklin";
+            font-size: 0.7em;
+        }
+        
+        .country {
+            font-family: "Libre Franklin";
+            pointer-events: none;
+            font-size: 16px;
+            font-style: bold;
+            position: absolute;
+        }
+        
+        svg {
+            -webkit-transform: rotate(-45deg);
+        }
+        
+        .x-axis .y-axis {
+            fill: none;
+            stroke: rgb(100,100,100);
+            font-family: "Libre Franklin";
+            font-size: 1em;
+            shape-rendering: crispEdges;
+        }
+        
+        .grid line {
+          stroke: lightgrey;
+          stroke-opacity: 0.3;
+          shape-rendering: crispEdges;
+        }
+        
+        .zero-line {
+            stroke: grey;
+            stroke-opacity: 0.8;
+        }
+
+        .ticks {
+            stroke: #4292c6;
+            stroke-opacity: 0.5;
+            stroke-width: 2;
+        }
+    
+        .hover-line {
+            stroke: #4292c6;
+            stroke-opacity: 0.5;
+            stroke-width: 1
+        }
+        
+        .arrow {
+            stroke: grey;
+        }
+        
+        .modal {
+           position: absolute;
+           top: 200px;
+           right: 50px;
+           left: 0;
+           z-index: 10040;
+           overflow: auto;
+           overflow-y: auto;
+}
+
+    </style>
+    
+    <body>
+        <h1 id="title">Displaying changes in the Gini coefficient</h1>
+        <p id="intro">The Gini coefficient is a measure of inequality. It can change in response to policy decisions,
+        national and international events, and economic factors. This tool displays changes in the coefficient between any two years. Nations for which data
+        are not available for both selected years are not shown.<br></p>
+        
+        <p id="source">Data are from the UNU-WIDER World Income Inequality Database (WIID3.4). For each state and year, the Gini scores were averaged.</p>
+        
+        <p id="selectText">Select any two years:</p>
+<div id="inputForm">
+<form>
+    <div class="input">
+    <select id="startYear">
+        <option value="X2016">2016</option><option value="X2015">2015</option><option value="X2014">2014</option><option value="X2013">2013</option>
+        <option value="X2012">2012</option><option value="X2011">2011</option><option value="X2010">2010</option><option value="X2009">2009</option>
+        <option value="X2008">2008</option><option value="X2007">2007</option><option value="X2006">2006</option><option value="X2005">2005</option>
+        <option value="X2004">2004</option><option value="X2003">2003</option><option value="X2002">2002</option><option value="X2001">2001</option>
+        <option value="X2000">2000</option><option value="X1999">1999</option><option value="X1998">1998</option><option value="X1997">1997</option>
+        <option value="X1996">1996</option><option value="X1995">1995</option><option value="X1994">1994</option><option value="X1993">1993</option>
+        <option selected value="X1992">1992</option><option value="X1991">1991</option><option value="X1990">1990</option><option value="X1989">1989</option>
+        <option value="X1988">1988</option><option value="X1987">1987</option><option value="X1986">1986</option><option value="X1985">1985</option>
+        <option value="X1984">1984</option><option value="X1983">1983</option><option value="X1982">1982</option><option value="X1981">1981</option>
+        <option value="X1980">1980</option>
+    </select>
+    
+    <select id="endYear">
+        <option value="X2016">2016</option><option value="X2015">2015</option><option value="X2014">2014</option><option value="X2013">2013</option>
+        <option value="X2012">2012</option><option value="X2011">2011</option><option value="X2010">2010</option><option value="X2009">2009</option>
+        <option value="X2008">2008</option><option value="X2007">2007</option><option value="X2006">2006</option><option value="X2005">2005</option>
+        <option value="X2004">2004</option><option value="X2003">2003</option><option value="X2002">2002</option><option value="X2001">2001</option>
+        <option value="X2000">2000</option><option value="X1999">1999</option><option value="X1998">1998</option><option value="X1997">1997</option>
+        <option value="X1996">1996</option><option value="X1995">1995</option><option value="X1994">1994</option><option selected value="X1993">1993</option>
+        <option value="X1992">1992</option><option value="X1991">1991</option><option value="X1990">1990</option><option value="X1989">1989</option>
+        <option value="X1988">1988</option><option value="X1987">1987</option><option value="X1986">1986</option><option value="X1985">1985</option>
+        <option value="X1984">1984</option><option value="X1983">1983</option><option value="X1982">1982</option><option value="X1981">1981</option>
+        <option value="X1980">1980</option>
+    </select>
+    <input type="submit" id="submitButton"></input>
+    </div>
+</form>
+</div>
+    
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="countryName"></h3>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    
+    <div id="plot"></div>
+    
+        <script>
+        
+             $("form").on('submit', function (e) {
+                e.preventDefault();
+                d3.selectAll("svg").remove();
+                // console.log($("#startYear").val());
+                // console.log($("#endYear").val());
+                var xColumn = $("#endYear").val();
+                var yColumn = $("#startYear").val();
+                var xYearGini = "Gini in " + xColumn.substr(1);
+                var yYearGini = "Gini in " + yColumn.substr(1)
+                
+                var pad = 100;
+                var w = screen.height*.6;
+                var h = screen.height*.6;
+                var graphTop = h - pad;
+                var radius = 7;
+                var minGini = 20;
+                var maxGini = 80;
+            
+                d3.csv("giniDataAfrica.csv", function(error, data) {
+                    if (error) throw error;
+                    data.forEach(function(d) {
+                        d[xColumn] = +d[xColumn];
+                        d[yColumn] = +d[yColumn];
+                        d["countryName"] = d["countryName"];
+                        d["difference"] = d[xColumn] - d[yColumn];
+                    });
+                    plot(data)
+                });
+        
+            function plot(data) {
+                // console.log(data);
+            
+                var svg = d3.select("#plot")
+                .append("svg")
+                .attr("height", h)
+                .attr("width", w);
+              
+                var xScale = d3.scaleLinear()
+                .domain([minGini, maxGini])
+                .range([pad, w - pad]);
+            
+                var yScale = d3.scaleLinear()
+                .domain([minGini, maxGini])
+                .range([h - pad, pad]);
+
+                var xAxis = d3.axisBottom(xScale).ticks(8);
+                var yAxis = d3.axisLeft(yScale).ticks(8);
+                
+            // functions to make gridlines on x and y axes
+                function make_x_gridlines() {		
+                    return d3.axisBottom(xScale)
+                    .ticks(8)
+                }
+                function make_y_gridlines() {		
+                    return d3.axisLeft(yScale)
+                    .ticks(8)
+                }
+            
+            // blue rectangle
+                svg.append("rect")
+                .attr("x", pad)
+                .attr("y", pad)
+                .attr("height", h - 2*pad)
+                .attr("width", w - 2*pad)
+                .style("fill", '#eaf8fd');
+
+            // zero line
+                svg.append("line")
+                .attr("class", "zero-line")
+                .attr("x1", pad)
+                .attr("y1", h - pad)
+                .attr("x2", w - pad)
+                .attr("y2", pad);
+                
+            // improved and worsened labels
+                svg.append("text")
+                .attr('class', "inequality")
+                .attr("x", w*3.25/5)
+                .attr("y", pad*1.1)
+                .text("Inequality")
+                .style('fill', 555555)
+                .attr("transform", 'translate(220,-250) rotate(45)')
+                svg.append("text")
+                .attr('class', "inequality")
+                .attr("x", w*3.25/5)
+                .attr("y", pad*1.1)
+                .attr("dy", 10)
+                .text("improved")
+                .style('fill', 555555)
+                .attr("transform", 'translate(220,-250) rotate(45)')
+                svg.append("text")
+                .attr('class', "inequality")
+                .attr("x", w*1.005)
+                .attr("y", pad*1.3)
+                .text("Inequality")
+                .style('fill', 555555)
+                .attr("transform", 'translate(117,-380) rotate(45)')
+                svg.append("text")
+                .attr('class', "inequality")
+                .attr("x", w*1.005)
+                .attr("y", pad*1.3)
+                .attr("dy", 10)
+                .text("worsened")
+                .style('fill', 555555)
+                .attr("transform", 'translate(117,-380) rotate(45)')
+            
+        // x and y axes, ticks, and labels
+            svg.append("g")
+                .attr("class", "x-axis")
+                .attr("transform", "translate(0," + (h - pad) + ")")
+                .call(xAxis)
+                .selectAll("text")  
+                .style("text-anchor", "start")
+                .attr("dx", 5)
+                .attr("dy", 2)
+                .attr("transform", 'rotate(45)')
+                .attr('text-anchor','start');
+            d3.select('.x-axis')
+                .append('text')
+                .attr("class", "axis-title")
+                .attr("transform", "translate(" + (pad + h/2) + ", 20) rotate(45)")
+                .attr('fill','black')
+                .attr('text-anchor','start')
+                .text(function(d) {
+                    return xYearGini;
+                } );
+            
+            svg.append("g")
+                .attr("class", "y-axis")
+                .attr("transform", "translate(" + pad +", 0)")
+                .call(yAxis)
+                .selectAll("text")  
+                .style("text-anchor", "end")
+                .attr("dx", 5)
+                .attr("dy", 10)
+                .attr("transform", 'rotate(45)')
+                .attr('text-anchor','end');
+             d3.select('.y-axis')
+                .append('text')
+                .attr("class", "axis-title")
+                .attr("transform", "translate (-30," + (pad + h/5) + ") rotate(45)")
+                .attr('fill','black')
+                .attr('text-anchor','end')
+                .text(function(d) {
+                    return yYearGini;
+                } );
+                
+            // tick marks to x and y axes
+                var xticks = svg.selectAll("xticks")
+                .data(data)
+                .enter()
+                .append("line")
+                .attr("class", "ticks")
+                .attr("x1", function(d) {return xScale(d[xColumn]); })
+                .attr("y1", h - pad)
+                .attr("x2", function(d) {return xScale(d[xColumn]); })
+                .attr("y2", h - pad - 10)
+                
+                var yticks = svg.selectAll("yticks")
+                .data(data)
+                .enter()
+                .append("line")
+                .attr("class", "ticks")
+                .attr("x1", pad)
+                .attr("y1", function(d) {return yScale(d[yColumn]); })
+                .attr("x2", pad + 10)
+                .attr("y2", function(d) {return yScale(d[yColumn]); })
+            
+              svg.append("g")			
+                .attr("class", "grid")
+                .attr("transform", "translate(0," + graphTop + ")")
+                .call(make_x_gridlines()
+                    .tickSize(-h + 2*pad)
+                    .tickFormat("")
+                )
+                
+                svg.append("g")			
+                .attr("class", "grid")
+                .attr("transform", "translate(" + pad + ",0)")
+                .call(make_y_gridlines()
+                    .tickSize(-h + 2*pad)
+                    .tickFormat("")
+                )
+                
+        // next sections are to make arrows
+        svg.append("line")
+        .attr("class", "arrow")
+        .attr("x1", w*14/20).attr("y1", h*3.5/20).attr("x2", w*15/20).attr("y2", h*4.5/20);
+        svg.append("line")
+        .attr("class", "arrow")
+        .attr("x1", w*14/20).attr("y1", h*3.5/20).attr("x2", w*14/20).attr("y2", h*3.75/20);
+        svg.append("line")
+        .attr("class", "arrow")
+            .attr("x1", w*14/20).attr("y1", h*3.5/20).attr("x2", w*14.25/20).attr("y2", h*3.5/20);
+
+        svg.append("line")
+        .attr("class", "arrow")
+            .attr("x1", w*15.5/20).attr("y1", h*5/20).attr("x2", w*16.5/20).attr("y2", h*6/20);
+        svg.append("line")
+        .attr("class", "arrow")
+            .attr("x1", w*16.5/20).attr("y1", h*5.75/20).attr("x2", w*16.5/20).attr("y2", h*6/20);
+        svg.append("line")
+        .attr("class", "arrow")
+            .attr("x1", w*16.25/20).attr("y1", h*6/20).attr("x2", w*16.5/20).attr("y2", h*6/20);
+        
+        var circ = svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("class", "dot")
+                .attr("data-toggle", "modal")
+                .attr("data-target", "#myModal")
+                .attr("cx", function(d) { return xScale(d[xColumn]); })
+                .attr("cy", function(d) { return yScale(d[yColumn]); })
+                .attr("r", radius)
+                .attr("opacity", 0.8)
+                .style("fill", "#4292c6")
+        
+        d3.selectAll('.dot')
+            .on('mouseover', function() {
+                d3.select("svg")
+                    .append('text')
+                    .attr('class','country _temp label')
+                    .html(d3.select(this).datum().countryName + " (" + d3.select(this).datum().difference.toFixed(1) + ")")
+                    .attr('x',d3.select(this).attr('cx'))
+                    .attr('y',d3.select(this).attr('cy'))
+                    .attr("dx", 5)
+                    .attr("dy", -5)
+                    .attr("fill", "black")
+                    .attr('visibility', 'visible')
+                d3.select("svg")
+                    .append('line')
+                    .attr('class', 'hover-line _temp')
+                    .attr('x1',d3.select(this).attr('cx'))
+                    .attr('y1',d3.select(this).attr('cy') + radius)
+                    .attr('x2',d3.select(this).attr('cx'))
+                    .attr('y2',graphTop)
+                d3.select("svg")
+                    .append('line')
+                    .attr('class', 'hover-line _temp')
+                    .attr('x1',pad)
+                    .attr('y1',d3.select(this).attr('cy'))
+                    .attr('x2',d3.select(this).attr('cx') - radius)
+                    .attr('y2',d3.select(this).attr('cy'))
+            })
+            .on('mouseout', function() {
+                d3.selectAll('._temp').remove();
+            })
+            .on('click', function(e,d) {
+                d3.select("svg")
+                    e.X2016 = +e.X2016; e.X2015 = +e.X2015; e.X2014 = +e.X2014; e.X2013 = +e.X2013;
+                    e.X2012 = +e.X2012; e.X2011 = +e.X2011; e.X2010 = +e.X2010; e.X2009 = +e.X2009;
+                    e.X2008 = +e.X2008; e.X2007 = +e.X2007; e.X2006 = +e.X2006; e.X2005 = +e.X2005;
+                    e.X2004 = +e.X2004; e.X2003 = +e.X2003; e.X2002 = +e.X2002; e.X2001 = +e.X2001;
+                    e.X2000 = +e.X2004; e.X1999 = +e.X1999; e.X1998 = +e.X1998; e.X1997 = +e.X1997;
+                    e.X1996 = +e.X1996; e.X1995 = +e.X1995; e.X1994 = +e.X1994; e.X1993 = +e.X1993;
+                    e.X1992 = +e.X1992; e.X1991 = +e.X1991; e.X1990 = +e.X1990; e.X1989 = +e.X1989;
+                    e.X1988 = +e.X1988; e.X1987 = +e.X1987; e.X1986 = +e.X1986; e.X1985 = +e.X1985;
+                    e.X1984 = +e.X1984; e.X1983 = +e.X1983; e.X1982 = +e.X1982; e.X1981 = +e.X1981;
+                    e.X1980 = +e.X1980;
+                    // console.log(e.X1990)
+        
+                    $('#myModal').modal('show');
+                    let modalTitle = d3.selectAll("h3.modal-title");
+                    modalTitle.text(e.countryName);
+                    let modalBody = d3.selectAll(".modal-body");
+                    modalBody.html("<div id='countryPlot'></div>")
+            
+                    var padCP = 10;
+                    var wCP = 500;
+                    var hCP = 50;
+                    var graphTop = hCP - padCP;
+                    var radiusCP = 8;
+                    var minGiniCP = 0;
+                    var maxGiniCP = 80;
+            
+                    var svg = d3.select("#countryPlot")
+                    .append("svg")
+                    .attr("height", hCP)
+                    .attr("width", wCP);
+              
+                    var xScaleCP = d3.scaleLinear()
+                    .domain([minGiniCP, maxGiniCP])
+                    .range([padCP, wCP - padCP]);
+            
+                    var yScaleCP = d3.scaleLinear()
+                    .domain([minGiniCP, maxGiniCP])
+                    .range([hCP - padCP, padCP]);
+
+                    var xAxisCP = d3.axisBottom(xScaleCP).ticks(8);
+                    var yAxisCP = d3.axisLeft(yScaleCP).ticks(4);
+            
+                     svg.append("rect")
+                        .attr("x", pad)
+                        .attr("y", pad)
+                        .attr("height", hCP - 2*padCP)
+                        .attr("width", wCP - 2*padCP)
+                        .style("fill", 'LightCyan')
+
+                    var g = svg.append("g");
+    // https://github.com/d3/d3-voronoi
+                });
+            }
+        })
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    
+    </body>
+</html>
