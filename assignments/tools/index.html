@@ -5,109 +5,88 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="https://d3js.org/d3.v4.min.js"></script>
-        <script
-			  src="https://code.jquery.com/jquery-3.2.1.min.js"
-			  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-			  crossorigin="anonymous"></script>
-	    <link href="c3.js" rel="stylesheet">
-	    <link href="c3.css" rel="stylesheet">
-	    <!--Bootstrap-->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-	    <!--fonts-->
-	    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Libre Franklin" type="text/css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700,900" rel="stylesheet">
     </head>
     
     <style type="text/css">
     
         body {
-            font-family: 'PT Sans', sans-serif;
-            line-height: 1.8em;
+            font-family: 'Roboto', sans-serif;
         }
         
         #title {
-            text-align: left;
+            font-size: 48px;
+            font-weight: 700;
             line-height: 0.9em;
-            font-size: 36px;
-            padding: 10px 5px 0px 10px;
-            font-style: bold;
+            margin: 20px;
         }
         
-        #intro {
-            line-height: 1.1em;
-            font-size: 16px;
-            padding: 10px 5px 0px 10px;
-            text-align: left;
-        }
+        .intro { position: absolute; text-align: right; font-weight: 300;}
+        #intro1 { top: 24px; left: 640px; width: 520px; }
+        #intro2 { top: 44px; left: 660px; width: 500px; }
+        #intro3 { top: 64px; left: 680px; width: 480px; }
+        #intro4 { top: 84px; left: 700px; width: 460px; }
+        #intro5 { top: 104px; left: 720px; width: 440px; }
         
-        #source {
-            line-height: 1.1em;
-            font-size: 14px;
-            padding: 10px 5px 0px 10px;
-            text-align: left;
-        }
-        
-        #selectText {
-            line-height: 0em;
-            font-family: 'PT Sans', sans-serif;
-            margin-left: 5%;
-            font-size: 20px;
-            display: inline-block;
-        }
-        
-        #startYear {
-            font-family: 'PT Sans', sans-serif;
-            margin-left: 5%;
-            font-size: 20px;
-            display: inline-block;
-        }
-        
-        #endYear {
-            font-family: 'PT Sans', sans-serif;
-            font-size: 20px;
-            display: inline-block;
-        }
+        .fromTo { font-family: 'PT Sans', sans-serif; position: absolute; font-size: 20px; top: 160px; }
+        #from { left: 895px; }
+        #startYear { left: 950px; }
+        #to { left: 1030px; }
+        #endYear { left: 1055px; }
         
         #submitButton {
             font-family: 'PT Sans', sans-serif;
             font-size: 20px;
-            display: inline-block;
-            margin-bottom: 2cm;
+            position: absolute;
+            left: 950px; top: 195px; width: 178px; height: 35px;
         }
         
+        #source { font-family: 'Roboto', sans-serif; font-weight: 300; font-size: 14px; text-align: left; position: absolute; top: 900px; margin: 20px; }
+        
+        /*#init {*/
+        /*    left: 160px;*/
+        /*    top: 50px;*/
+        /*    text-align: left;*/
+        /*    position: absolute;*/
+        /*}*/
+        
         #plot {
-            /*width: 1700px;*/
-            margin-left: 5%;
+            left: 160px;
+            top: 50px;
             text-align: left;
+            position: absolute;
         }
         
         .axis-title {
-            font-family: "Libre Franklin";
+            font-family: "PT Sans";
             font-size: 1.8em;
         }
         
         .inequality {
-            font-family: "Libre Franklin";
-            font-size: 0.7em;
+            font-family: "PT Sans";
+            font-size: 16px;
         }
         
         .country {
-            font-family: "Libre Franklin";
+            font-family: "PT Sans";
             pointer-events: none;
-            font-size: 16px;
+            font-size: 18px;
             font-style: bold;
             position: absolute;
         }
         
-        svg {
+        #diamond {
             -webkit-transform: rotate(-45deg);
+            /*position: fixed;*/
         }
         
         .x-axis .y-axis {
             fill: none;
             stroke: rgb(100,100,100);
-            font-family: "Libre Franklin";
+            font-family: "PT Sans";
             font-size: 1em;
             shape-rendering: crispEdges;
         }
@@ -142,52 +121,60 @@
         .modal {
            position: absolute;
            top: 200px;
-           right: 50px;
+           /*right: 20px;*/
            left: 0;
-           z-index: 10040;
+           z-index: 10000;
            overflow: auto;
            overflow-y: auto;
+           height: 500px;
 }
 
     </style>
     
     <body>
-        <h1 id="title">Displaying changes in the Gini coefficient</h1>
-        <p id="intro">The Gini coefficient is a measure of inequality. It can change in response to policy decisions,
-        national and international events, and economic factors. This tool displays changes in the coefficient between any two years. Nations for which data
-        are not available for both selected years are not shown.<br></p>
+
+        <div><h1 id="title">How does inequality<br>change over time?<br></h1></div>
         
-        <p id="source">Data are from the UNU-WIDER World Income Inequality Database (WIID3.4). For each state and year, the Gini scores were averaged.</p>
+        <p class="intro" id="intro1">The Gini coefficient is a measure of inequality. It can change in response</p>
+        <p class="intro" id="intro2">to policy decisions, national and international events, and economic</p>
+        <p class="intro" id="intro3">factors. This scatter plot displays changes in the coefficient for any</p>
+        <p class="intro" id="intro4">two years. Only those countries for which data are available in</p>
+        <p class="intro" id="intro5">both selected years will appear on the plot.</p>
         
-        <p id="selectText">Select any two years:</p>
-<div id="inputForm">
-<form>
-    <div class="input">
-    <select id="startYear">
-        <option value="X2016">2016</option><option value="X2015">2015</option><option value="X2014">2014</option><option value="X2013">2013</option>
-        <option value="X2012">2012</option><option value="X2011">2011</option><option value="X2010">2010</option><option value="X2009">2009</option>
-        <option value="X2008">2008</option><option value="X2007">2007</option><option value="X2006">2006</option><option value="X2005">2005</option>
-        <option value="X2004">2004</option><option value="X2003">2003</option><option value="X2002">2002</option><option value="X2001">2001</option>
-        <option value="X2000">2000</option><option value="X1999">1999</option><option value="X1998">1998</option><option value="X1997">1997</option>
-        <option value="X1996">1996</option><option value="X1995">1995</option><option value="X1994">1994</option><option value="X1993">1993</option>
-        <option selected value="X1992">1992</option><option value="X1991">1991</option><option value="X1990">1990</option><option value="X1989">1989</option>
-        <option value="X1988">1988</option><option value="X1987">1987</option><option value="X1986">1986</option><option value="X1985">1985</option>
-        <option value="X1984">1984</option><option value="X1983">1983</option><option value="X1982">1982</option><option value="X1981">1981</option>
-        <option value="X1980">1980</option>
-    </select>
+        <p id="from" class="fromTo">From</p>
+        <p id="to" class="fromTo">to</p>
+
+        <p id="source">Data are from the <a href="https://www.wider.unu.edu/project/wiid-world-income-inequality-database" target="_blank">
+        UNU-WIDER World Income Inequality Database version 3.4 (WIID3.4)</a>. For each country and year, all available Gini scores were averaged.</p>
+
+    <div id="inputForm">
+    <form>
+        <div class="input">
+        <select id="startYear" class="fromTo">
+            <option value="_2016">2016</option><option value="_2015">2015</option><option value="_2014">2014</option><option value="_2013">2013</option>
+            <option value="_2012">2012</option><option value="_2011">2011</option><option value="_2010">2010</option><option value="_2009">2009</option>
+            <option value="_2008">2008</option><option value="_2007">2007</option><option value="_2006">2006</option><option value="_2005">2005</option>
+            <option value="_2004">2004</option><option value="_2003">2003</option><option value="_2002">2002</option><option value="_2001">2001</option>
+            <option value="_2000">2000</option><option value="_1999">1999</option><option value="_1998">1998</option><option value="_1997">1997</option>
+            <option value="_1996">1996</option><option value="_1995">1995</option><option value="_1994">1994</option><option value="_1993">1993</option>
+            <option selected value="_1992">1992</option><option value="_1991">1991</option><option value="_1990">1990</option><option value="_1989">1989</option>
+            <option value="_1988">1988</option><option value="_1987">1987</option><option value="_1986">1986</option><option value="_1985">1985</option>
+            <option value="_1984">1984</option><option value="_1983">1983</option><option value="_1982">1982</option><option value="_1981">1981</option>
+            <option value="_1980">1980</option>
+        </select>
     
-    <select id="endYear">
-        <option value="X2016">2016</option><option value="X2015">2015</option><option value="X2014">2014</option><option value="X2013">2013</option>
-        <option value="X2012">2012</option><option value="X2011">2011</option><option value="X2010">2010</option><option value="X2009">2009</option>
-        <option value="X2008">2008</option><option value="X2007">2007</option><option value="X2006">2006</option><option value="X2005">2005</option>
-        <option value="X2004">2004</option><option value="X2003">2003</option><option value="X2002">2002</option><option value="X2001">2001</option>
-        <option value="X2000">2000</option><option value="X1999">1999</option><option value="X1998">1998</option><option value="X1997">1997</option>
-        <option value="X1996">1996</option><option value="X1995">1995</option><option value="X1994">1994</option><option selected value="X1993">1993</option>
-        <option value="X1992">1992</option><option value="X1991">1991</option><option value="X1990">1990</option><option value="X1989">1989</option>
-        <option value="X1988">1988</option><option value="X1987">1987</option><option value="X1986">1986</option><option value="X1985">1985</option>
-        <option value="X1984">1984</option><option value="X1983">1983</option><option value="X1982">1982</option><option value="X1981">1981</option>
-        <option value="X1980">1980</option>
-    </select>
+        <select id="endYear" class="fromTo">
+            <option value="_2016">2016</option><option value="_2015">2015</option><option value="_2014">2014</option><option value="_2013">2013</option>
+            <option value="_2012">2012</option><option value="_2011">2011</option><option value="_2010">2010</option><option value="_2009">2009</option>
+            <option value="_2008">2008</option><option value="_2007">2007</option><option value="_2006">2006</option><option value="_2005">2005</option>
+            <option value="_2004">2004</option><option value="_2003">2003</option><option value="_2002">2002</option><option value="_2001">2001</option>
+            <option value="_2000">2000</option><option value="_1999">1999</option><option value="_1998">1998</option><option value="_1997">1997</option>
+            <option value="_1996">1996</option><option value="_1995">1995</option><option value="_1994">1994</option><option selected value="_1993">1993</option>
+            <option value="_1992">1992</option><option value="_1991">1991</option><option value="_1990">1990</option><option value="_1989">1989</option>
+            <option value="_1988">1988</option><option value="_1987">1987</option><option value="_1986">1986</option><option value="_1985">1985</option>
+            <option value="_1984">1984</option><option value="_1983">1983</option><option value="_1982">1982</option><option value="_1981">1981</option>
+            <option value="_1980">1980</option>
+        </select>
     <input type="submit" id="submitButton"></input>
     </div>
 </form>
@@ -211,6 +198,19 @@
     
         <script>
         
+        // var svg = d3.select("body").append("svg")
+        //         .attr("id", "init")
+        //         .attr("width", 800)
+        //         .attr("height", 800)
+                
+        // var rect = svg.append("rect")
+        //         .attr("x", 300)
+        //         .attr("y", -300)
+        //         .attr("width", 600)
+        //         .attr("height", 600)
+        //         .attr("transform", "rotate(45)")
+        //         .style("fill", "black")
+        
              $("form").on('submit', function (e) {
                 e.preventDefault();
                 d3.selectAll("svg").remove();
@@ -218,12 +218,12 @@
                 // console.log($("#endYear").val());
                 var xColumn = $("#endYear").val();
                 var yColumn = $("#startYear").val();
-                var xYearGini = "Gini in " + xColumn.substr(1);
-                var yYearGini = "Gini in " + yColumn.substr(1)
+                var xYearGini = "Income inequality in " + xColumn.substr(1) + " (Gini)";
+                var yYearGini = "Income inequality in " + yColumn.substr(1) + " (Gini)"
                 
                 var pad = 100;
-                var w = screen.height*.6;
-                var h = screen.height*.6;
+                var w = 800;
+                var h = 800;
                 var graphTop = h - pad;
                 var radius = 7;
                 var minGini = 20;
@@ -241,10 +241,9 @@
                 });
         
             function plot(data) {
-                // console.log(data);
-            
                 var svg = d3.select("#plot")
                 .append("svg")
+                .attr("id", "diamond")
                 .attr("height", h)
                 .attr("width", w);
               
@@ -268,54 +267,25 @@
                     return d3.axisLeft(yScale)
                     .ticks(8)
                 }
-            
+
             // blue rectangle
                 svg.append("rect")
-                .attr("x", pad)
-                .attr("y", pad)
-                .attr("height", h - 2*pad)
-                .attr("width", w - 2*pad)
+                .attr("x", pad).attr("y", pad).attr("height", h - 2*pad).attr("width", w - 2*pad)
                 .style("fill", '#eaf8fd');
 
             // zero line
                 svg.append("line")
                 .attr("class", "zero-line")
-                .attr("x1", pad)
-                .attr("y1", h - pad)
-                .attr("x2", w - pad)
-                .attr("y2", pad);
+                .attr("x1", pad).attr("y1", h - pad).attr("x2", w - pad).attr("y2", pad);
                 
-            // improved and worsened labels
-                svg.append("text")
-                .attr('class', "inequality")
-                .attr("x", w*3.25/5)
-                .attr("y", pad*1.1)
-                .text("Inequality")
-                .style('fill', 555555)
-                .attr("transform", 'translate(220,-250) rotate(45)')
-                svg.append("text")
-                .attr('class', "inequality")
-                .attr("x", w*3.25/5)
-                .attr("y", pad*1.1)
-                .attr("dy", 10)
-                .text("improved")
-                .style('fill', 555555)
-                .attr("transform", 'translate(220,-250) rotate(45)')
-                svg.append("text")
-                .attr('class', "inequality")
-                .attr("x", w*1.005)
-                .attr("y", pad*1.3)
-                .text("Inequality")
-                .style('fill', 555555)
-                .attr("transform", 'translate(117,-380) rotate(45)')
-                svg.append("text")
-                .attr('class', "inequality")
-                .attr("x", w*1.005)
-                .attr("y", pad*1.3)
-                .attr("dy", 10)
-                .text("worsened")
-                .style('fill', 555555)
-                .attr("transform", 'translate(117,-380) rotate(45)')
+            // // key
+            //     svg.append("rect")
+            //     .attr("x", 1100)
+            //     .attr("y", -300)
+            //     .attr("width", 200)
+            //     .attr("height", 200)
+            //     .attr("transform", "rotate(45)")
+            //     .style("fill", "black")
             
         // x and y axes, ticks, and labels
             svg.append("g")
@@ -331,7 +301,7 @@
             d3.select('.x-axis')
                 .append('text')
                 .attr("class", "axis-title")
-                .attr("transform", "translate(" + (pad + h/2) + ", 20) rotate(45)")
+                .attr("transform", "translate(" + (w/2 - pad) + ", 40)")
                 .attr('fill','black')
                 .attr('text-anchor','start')
                 .text(function(d) {
@@ -351,7 +321,7 @@
              d3.select('.y-axis')
                 .append('text')
                 .attr("class", "axis-title")
-                .attr("transform", "translate (-30," + (pad + h/5) + ") rotate(45)")
+                .attr("transform", "translate (-40," + (h/2 + pad) + ") rotate(90)")
                 .attr('fill','black')
                 .attr('text-anchor','end')
                 .text(function(d) {
@@ -396,27 +366,37 @@
                 )
                 
         // next sections are to make arrows
-        svg.append("line")
-        .attr("class", "arrow")
-        .attr("x1", w*14/20).attr("y1", h*3.5/20).attr("x2", w*15/20).attr("y2", h*4.5/20);
-        svg.append("line")
-        .attr("class", "arrow")
-        .attr("x1", w*14/20).attr("y1", h*3.5/20).attr("x2", w*14/20).attr("y2", h*3.75/20);
-        svg.append("line")
-        .attr("class", "arrow")
-            .attr("x1", w*14/20).attr("y1", h*3.5/20).attr("x2", w*14.25/20).attr("y2", h*3.5/20);
+            svg.append("line")
+            .attr("class", "arrow")
+            .attr("x1", w*13/20).attr("y1", h*13/20).attr("x2", w*16/20).attr("y2", h*16/20);
+            svg.append("line")
+            .attr("class", "arrow")
+            .attr("x1", w*16/20).attr("y1", h*16/20).attr("x2", w*16/20).attr("y2", h*15.5/20);
+            svg.append("line")
+            .attr("class", "arrow")
+            .attr("x1", w*15.5/20).attr("y1", h*16/20).attr("x2", w*16/20).attr("y2", h*16/20);
 
-        svg.append("line")
-        .attr("class", "arrow")
-            .attr("x1", w*15.5/20).attr("y1", h*5/20).attr("x2", w*16.5/20).attr("y2", h*6/20);
-        svg.append("line")
-        .attr("class", "arrow")
-            .attr("x1", w*16.5/20).attr("y1", h*5.75/20).attr("x2", w*16.5/20).attr("y2", h*6/20);
-        svg.append("line")
-        .attr("class", "arrow")
-            .attr("x1", w*16.25/20).attr("y1", h*6/20).attr("x2", w*16.5/20).attr("y2", h*6/20);
-        
-        var circ = svg.selectAll("circle")
+            svg.append("line")
+            .attr("class", "arrow")
+            .attr("x1", w*4/20).attr("y1", h*4/20).attr("x2", w*7/20).attr("y2", h*7/20);
+            svg.append("line")
+            .attr("class", "arrow")
+            .attr("x1", w*4/20).attr("y1", h*4/20).attr("x2", w*4/20).attr("y2", h*4.5/20);
+            svg.append("line")
+            .attr("class", "arrow")
+            .attr("x1", w*4.5/20).attr("y1", h*4/20).attr("x2", w*4/20).attr("y2", h*4/20);
+            
+        // improved and worsened labels
+                svg.append("text")
+                .attr('class', "inequality")
+                .attr("x", w*7/20).attr("y", h*8/20)
+                .text("Inequality improved").style('fill', 555555).attr("transform", 'translate(220,-250) rotate(45)')
+                svg.append("text")
+                .attr('class', "inequality")
+                .attr("x", w*23.5/20).attr("y", h*8.5/20)
+                .text("Inequality worsened").style('fill', 555555).attr("transform", 'translate(117,-380) rotate(45)')
+
+            var circ = svg.selectAll("circle")
                 .data(data)
                 .enter()
                 .append("circle")
@@ -461,60 +441,106 @@
             })
             .on('click', function(e,d) {
                 d3.select("svg")
-                    e.X2016 = +e.X2016; e.X2015 = +e.X2015; e.X2014 = +e.X2014; e.X2013 = +e.X2013;
-                    e.X2012 = +e.X2012; e.X2011 = +e.X2011; e.X2010 = +e.X2010; e.X2009 = +e.X2009;
-                    e.X2008 = +e.X2008; e.X2007 = +e.X2007; e.X2006 = +e.X2006; e.X2005 = +e.X2005;
-                    e.X2004 = +e.X2004; e.X2003 = +e.X2003; e.X2002 = +e.X2002; e.X2001 = +e.X2001;
-                    e.X2000 = +e.X2004; e.X1999 = +e.X1999; e.X1998 = +e.X1998; e.X1997 = +e.X1997;
-                    e.X1996 = +e.X1996; e.X1995 = +e.X1995; e.X1994 = +e.X1994; e.X1993 = +e.X1993;
-                    e.X1992 = +e.X1992; e.X1991 = +e.X1991; e.X1990 = +e.X1990; e.X1989 = +e.X1989;
-                    e.X1988 = +e.X1988; e.X1987 = +e.X1987; e.X1986 = +e.X1986; e.X1985 = +e.X1985;
-                    e.X1984 = +e.X1984; e.X1983 = +e.X1983; e.X1982 = +e.X1982; e.X1981 = +e.X1981;
-                    e.X1980 = +e.X1980;
-                    // console.log(e.X1990)
+                    var countryData =
+                    [{value: +e._2016, year: 2016},{value: +e._2015, year: 2015},{value: +e._2014, year: 2014},{value: +e._2013, year: 2013},
+                    {value: +e._2012, year: 2012},{value: +e._2011, year: 2011},{value: +e._2010, year: 2010},{value: +e._2009, year: 2009},
+                    {value: +e._2008, year: 2008},{value: +e._2007, year: 2007},{value: +e._2006, year: 2006},{value: +e._2005, year: 2005},
+                    {value: +e._2004, year: 2004},{value: +e._2003, year: 2003},{value: +e._2002, year: 2002},{value: +e._2001, year: 2001},
+                    {value: +e._2000, year: 2000},{value: +e._1999, year: 1999},{value: +e._1998, year: 1998},{value: +e._1997, year: 1997},
+                    {value: +e._1996, year: 1996},{value: +e._1995, year: 1995},{value: +e._1994, year: 1994},{value: +e._1993, year: 1993},
+                    {value: +e._1992, year: 1992},{value: +e._1991, year: 1991},{value: +e._1990, year: 1990},{value: +e._1989, year: 1989},
+                    {value: +e._1988, year: 1988},{value: +e._1987, year: 1987},{value: +e._1986, year: 1986},{value: +e._1985, year: 1985},
+                    {value: +e._1984, year: 1984},{value: +e._1983, year: 1983},{value: +e._1982, year: 1982},{value: +e._1981, year: 1981},
+                    {value: +e._1980, year: 1980}];
         
-                    $('#myModal').modal('show');
                     let modalTitle = d3.selectAll("h3.modal-title");
                     modalTitle.text(e.countryName);
                     let modalBody = d3.selectAll(".modal-body");
                     modalBody.html("<div id='countryPlot'></div>")
             
-                    var padCP = 10;
-                    var wCP = 500;
-                    var hCP = 50;
-                    var graphTop = hCP - padCP;
-                    var radiusCP = 8;
-                    var minGiniCP = 0;
-                    var maxGiniCP = 80;
+                    var pad = 30;
+                    var w = 700;
+                    var h = 200;
+                    var graphTop = h - pad;
+                    var radius = 7;
+                    var minGini = 20;
+                    var maxGini = 80;
             
                     var svg = d3.select("#countryPlot")
                     .append("svg")
-                    .attr("height", hCP)
-                    .attr("width", wCP);
+                    .attr("height", h)
+                    .attr("width", w);
               
-                    var xScaleCP = d3.scaleLinear()
-                    .domain([minGiniCP, maxGiniCP])
-                    .range([padCP, wCP - padCP]);
+                    var xScale = d3.scaleLinear()
+                    .domain([1980, 2016])
+                    .range([pad+10, w - pad]);
             
-                    var yScaleCP = d3.scaleLinear()
-                    .domain([minGiniCP, maxGiniCP])
-                    .range([hCP - padCP, padCP]);
+                    var yScale = d3.scaleLinear()
+                    .domain([minGini, maxGini])
+                    .range([h - pad, pad]);
 
-                    var xAxisCP = d3.axisBottom(xScaleCP).ticks(8);
-                    var yAxisCP = d3.axisLeft(yScaleCP).ticks(4);
+                    var xAxisTickLabels = ["1980","","","","","1985","","","","","1990","","","","",
+                    "1995","","","","","2000","","","","","2005",,"","","","","2010","","","","","2015",""]
+                    var xAxis = d3.axisBottom(xScale).ticks(37).tickValues(d.year).tickFormat(function(d,i){ return xAxisTickLabels[i] });
+                    var yAxis = d3.axisLeft(yScale).ticks(4);
+                    
+                    function make_y_gridlines() {		
+                        return d3.axisLeft(yScale)
+                        .ticks(8)
+                    }
+                    
+                svg.append("g")
+                .attr("class", "x-axis")
+                .attr("transform", "translate(0," + (h - pad) + ")")
+                .call(xAxis)
+                .selectAll("text")  
+                .style("text-anchor", "start")
+                .attr("transform", 'translate(-25, 20) rotate(-45)')
+                .attr('text-anchor','start');
+                d3.select('.x-axis')
+                .append('text')
+                .attr("class", "axis-title")
+                .attr("transform", "translate(" + w/2 + ", 30)")
+                .attr('fill','black')
+                .attr('text-anchor','start')
+                .text("Year");
             
-                     svg.append("rect")
-                        .attr("x", pad)
-                        .attr("y", pad)
-                        .attr("height", hCP - 2*padCP)
-                        .attr("width", wCP - 2*padCP)
-                        .style("fill", 'LightCyan')
-
-                    var g = svg.append("g");
-    // https://github.com/d3/d3-voronoi
+                svg.append("g")
+                .attr("class", "y-axis")
+                .attr("transform", "translate(" + pad +", 0)")
+                .call(yAxis)
+                .selectAll("text")  
+                .style("text-anchor", "end")
+                .attr('text-anchor','end');
+                d3.select('.y-axis')
+                .append('text')
+                .attr("class", "axis-title")
+                .attr("transform", "translate (" + w/2 + "," + (pad + h/5) + "rotate(90))")
+                .attr('fill','black')
+                .attr('text-anchor','end')
+                .text("Gini score");
+                
+                svg.append("g")			
+                .attr("class", "grid")
+                .attr("transform", "translate(" + pad + ",0)")
+                .call(make_y_gridlines()
+                    .tickSize(-h + 2*pad)
+                    .tickFormat("")
+                )
+                
+                var circ = svg.selectAll("circle")
+                .data(countryData)
+                .enter()
+                .append("circle")
+                .attr("class", "dot")
+                .attr("cx", function(d) { return xScale(d.year); })
+                .attr("cy", function(d) { return yScale(d.value); })
+                .attr("r", radius)
+                .attr("opacity", 0.8)
+                .style("fill", "#4292c6");
                 });
             }
-        })
+        });
 
     </script>
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
