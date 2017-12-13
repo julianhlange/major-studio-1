@@ -9,8 +9,8 @@ The two years can be consecutive or non-consecutive.
 ![preview.png](preview.png)
 
 ### Features
-* Select any two years between 1980 and 2017 to view the changes in Gini coefficient for all African countries for which data are available
-* On the scatterplot, click on a country's dot to view all available data for that country between 1980 and 2016
+* Select any two years between 1980 and 2015 to view the changes in Gini coefficient for all African countries for which data are available
+* On the scatterplot, click on a country's dot to view all available data for that country between 1980 and 2015
 
 ### Credits
 Created by Julian H. Lange with data from the following sources:
