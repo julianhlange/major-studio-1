@@ -6,8 +6,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="https://d3js.org/d3.v4.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+	    <!--Bootstrap-->
 	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	    <!--fonts-->
+	    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Libre Franklin" type="text/css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700,900" rel="stylesheet">
     </head>
     
@@ -46,12 +50,12 @@
         
         #source { font-family: 'Roboto', sans-serif; font-weight: 300; font-size: 14px; text-align: left; position: absolute; top: 900px; margin: 20px; }
         
-        /*#init {*/
-        /*    left: 160px;*/
-        /*    top: 50px;*/
-        /*    text-align: left;*/
-        /*    position: absolute;*/
-        /*}*/
+        #init {
+            left: 160px;
+            top: 50px;
+            text-align: left;
+            position: absolute;
+        }
         
         #plot {
             left: 160px;
@@ -67,13 +71,13 @@
         
         .inequality {
             font-family: "PT Sans";
-            font-size: 16px;
+            font-size: 14px;
         }
         
         .country {
             font-family: "PT Sans";
             pointer-events: none;
-            font-size: 18px;
+            font-size: 16px;
             font-style: bold;
             position: absolute;
         }
@@ -83,10 +87,15 @@
             /*position: fixed;*/
         }
         
+        #key {
+            -webkit-transform: rotate(-45deg);
+            position: fixed;
+        }
+        
         .x-axis .y-axis {
             fill: none;
             stroke: rgb(100,100,100);
-            font-family: "PT Sans";
+            font-family: "Libre Franklin";
             font-size: 1em;
             shape-rendering: crispEdges;
         }
@@ -278,14 +287,14 @@
                 .attr("class", "zero-line")
                 .attr("x1", pad).attr("y1", h - pad).attr("x2", w - pad).attr("y2", pad);
                 
-            // // key
-            //     svg.append("rect")
-            //     .attr("x", 1100)
-            //     .attr("y", -300)
-            //     .attr("width", 200)
-            //     .attr("height", 200)
-            //     .attr("transform", "rotate(45)")
-            //     .style("fill", "black")
+            // key
+                svg.append("rect")
+                .attr("x", 1100)
+                .attr("y", -300)
+                .attr("width", 200)
+                .attr("height", 200)
+                .attr("transform", "rotate(45)")
+                .style("fill", "black")
             
         // x and y axes, ticks, and labels
             svg.append("g")
@@ -321,7 +330,7 @@
              d3.select('.y-axis')
                 .append('text')
                 .attr("class", "axis-title")
-                .attr("transform", "translate (-40," + (h/2 + pad) + ") rotate(90)")
+                .attr("transform", "rotate(90)")
                 .attr('fill','black')
                 .attr('text-anchor','end')
                 .text(function(d) {
@@ -391,11 +400,19 @@
                 .attr('class', "inequality")
                 .attr("x", w*7/20).attr("y", h*8/20)
                 .text("Inequality improved").style('fill', 555555).attr("transform", 'translate(220,-250) rotate(45)')
+                // svg.append("text")
+                // .attr('class', "inequality")
+                // .attr("x", w*3.25/5).attr("y", pad*1.1).attr("dy", 10)
+                // .text("improved").style('fill', 555555).attr("transform", 'translate(220,-250) rotate(45)')
                 svg.append("text")
                 .attr('class', "inequality")
                 .attr("x", w*23.5/20).attr("y", h*8.5/20)
                 .text("Inequality worsened").style('fill', 555555).attr("transform", 'translate(117,-380) rotate(45)')
-
+                // svg.append("text")
+                // .attr('class', "inequality")
+                // .attr("x", w*1.005).attr("y", pad*1.3).attr("dy", 10)
+                // .text("worsened").style('fill', 555555).attr("transform", 'translate(117,-380) rotate(45)')
+        
             var circ = svg.selectAll("circle")
                 .data(data)
                 .enter()
@@ -408,6 +425,19 @@
                 .attr("r", radius)
                 .attr("opacity", 0.8)
                 .style("fill", "#4292c6")
+                
+                
+            // var countries = svg.selectAll("text")
+            //     .data(data)
+            //     .append("text")
+            //     .attr("class", "countries")
+            //     .attr("cx", function(d) { return xScale(d[xColumn]); })
+            //     .attr("cy", function(d) { return yScale(d[yColumn]); })
+            //     .attr("r", radius)
+            //     .attr("opacity", 0.8)
+            //     .style("fill", "#4292c6")
+            //     .text(function(d) { return countryName});
+                
         
         d3.selectAll('.dot')
             .on('mouseover', function() {
@@ -454,7 +484,7 @@
                     {value: +e._1980, year: 1980}];
         
                     let modalTitle = d3.selectAll("h3.modal-title");
-                    modalTitle.text(e.countryName);
+                    modalTitle.text("Gini scores in " + e.countryName);
                     let modalBody = d3.selectAll(".modal-body");
                     modalBody.html("<div id='countryPlot'></div>")
             
