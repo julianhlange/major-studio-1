@@ -6,12 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="https://d3js.org/d3.v4.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-	    <!--Bootstrap-->
 	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-	    <!--fonts-->
-	    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Libre Franklin" type="text/css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700,900" rel="stylesheet">
     </head>
     
@@ -35,67 +31,61 @@
         #intro4 { top: 84px; left: 700px; width: 460px; }
         #intro5 { top: 104px; left: 720px; width: 440px; }
         
-        .fromTo { font-family: 'PT Sans', sans-serif; position: absolute; font-size: 20px; top: 160px; }
-        #from { left: 895px; }
-        #startYear { left: 950px; }
-        #to { left: 1030px; }
-        #endYear { left: 1055px; }
+        .fromTo { font-family: 'PT Sans', sans-serif; position: absolute; font-size: 30px; top: 200px; z-index: 1}
+        #from { left: 121px; }
+        #startYear { left: 200px; }
+        #to { left: 828px; }
+        #endYear { left: 865px; }
         
-        #submitButton {
-            font-family: 'PT Sans', sans-serif;
-            font-size: 20px;
-            position: absolute;
-            left: 950px; top: 195px; width: 178px; height: 35px;
-        }
-        
-        #source { font-family: 'Roboto', sans-serif; font-weight: 300; font-size: 14px; text-align: left; position: absolute; top: 900px; margin: 20px; }
-        
-        #init {
-            left: 160px;
-            top: 50px;
-            text-align: left;
-            position: absolute;
-        }
+        #source { font-family: 'Roboto', sans-serif; font-weight: 300; font-size: 14px; text-align: left; position: absolute; top: 950px; margin: 20px; }
         
         #plot {
             left: 160px;
             top: 50px;
             text-align: left;
             position: absolute;
+            z: 0;
         }
         
         .axis-title {
             font-family: "PT Sans";
-            font-size: 1.8em;
+            font-size: 18px;
         }
         
         .inequality {
             font-family: "PT Sans";
-            font-size: 14px;
+            font-size: 16px;
+            fill: #696969;
         }
         
         .country {
             font-family: "PT Sans";
             pointer-events: none;
-            font-size: 16px;
+            font-size: 18px;
             font-style: bold;
             position: absolute;
         }
         
-        #diamond {
-            -webkit-transform: rotate(-45deg);
-            /*position: fixed;*/
+        #keyTitle {
+            font-family: "PT Sans";
+            font-size: 16px;
+            fill: #696969;
         }
         
-        #key {
+        .key {
+            font-family: "PT Sans";
+            font-size: 12px;
+            fill: #696969;
+        }
+        
+        #diamond {
             -webkit-transform: rotate(-45deg);
-            position: fixed;
         }
         
         .x-axis .y-axis {
             fill: none;
             stroke: rgb(100,100,100);
-            font-family: "Libre Franklin";
+            font-family: "PT Sans";
             font-size: 1em;
             shape-rendering: crispEdges;
         }
@@ -109,8 +99,9 @@
         .zero-line {
             stroke: grey;
             stroke-opacity: 0.8;
+            stroke-dasharray: 5
+            
         }
-
         .ticks {
             stroke: #4292c6;
             stroke-opacity: 0.5;
@@ -120,11 +111,12 @@
         .hover-line {
             stroke: #4292c6;
             stroke-opacity: 0.5;
-            stroke-width: 1
+            stroke-width: 2
         }
         
         .arrow {
-            stroke: grey;
+            stroke: #A9A9A9;
+            stroke-width: 1.5
         }
         
         .modal {
@@ -137,7 +129,6 @@
            overflow-y: auto;
            height: 500px;
 }
-
     </style>
     
     <body>
@@ -146,45 +137,44 @@
         
         <p class="intro" id="intro1">The Gini coefficient is a measure of inequality. It can change in response</p>
         <p class="intro" id="intro2">to policy decisions, national and international events, and economic</p>
-        <p class="intro" id="intro3">factors. This scatter plot displays changes in the coefficient for any</p>
-        <p class="intro" id="intro4">two years. Only those countries for which data are available in</p>
-        <p class="intro" id="intro5">both selected years will appear on the plot.</p>
+        <p class="intro" id="intro3">factors. This scatter plot displays changes in the coefficient for</p>
+        <p class="intro" id="intro4">any two years. Only those African countries for which data</p>
+        <p class="intro" id="intro5">are available in both selected years appear on the plot.</p>
         
         <p id="from" class="fromTo">From</p>
         <p id="to" class="fromTo">to</p>
 
         <p id="source">Data are from the <a href="https://www.wider.unu.edu/project/wiid-world-income-inequality-database" target="_blank">
-        UNU-WIDER World Income Inequality Database version 3.4 (WIID3.4)</a>. For each country and year, all available Gini scores were averaged.</p>
+        UNU-WIDER World Income Inequality Database version 3.4 (WIID3.4)</a>.<br>
+        For each country and year, all available Gini scores were averaged. See <a href="https://github.com/julianhlange/major-studio-1/blob/master/assignments/tools/README.md" target="_blank">README</a> for further details.<br>
+        Visualization by <a href="https://www.julianhlange.com" target="_blank">Julian H. Lange</a></p>
 
     <div id="inputForm">
     <form>
         <div class="input">
         <select id="startYear" class="fromTo">
-            <option value="_2016">2016</option><option value="_2015">2015</option><option value="_2014">2014</option><option value="_2013">2013</option>
-            <option value="_2012">2012</option><option value="_2011">2011</option><option value="_2010">2010</option><option value="_2009">2009</option>
-            <option value="_2008">2008</option><option value="_2007">2007</option><option value="_2006">2006</option><option value="_2005">2005</option>
-            <option value="_2004">2004</option><option value="_2003">2003</option><option value="_2002">2002</option><option value="_2001">2001</option>
-            <option value="_2000">2000</option><option value="_1999">1999</option><option value="_1998">1998</option><option value="_1997">1997</option>
-            <option value="_1996">1996</option><option value="_1995">1995</option><option value="_1994">1994</option><option value="_1993">1993</option>
-            <option selected value="_1992">1992</option><option value="_1991">1991</option><option value="_1990">1990</option><option value="_1989">1989</option>
-            <option value="_1988">1988</option><option value="_1987">1987</option><option value="_1986">1986</option><option value="_1985">1985</option>
-            <option value="_1984">1984</option><option value="_1983">1983</option><option value="_1982">1982</option><option value="_1981">1981</option>
-            <option value="_1980">1980</option>
+            <option value="_2015">2015</option><option value="_2014">2014</option><option value="_2013">2013</option><option value="_2012">2012</option>
+            <option value="_2011">2011</option><option value="_2010">2010</option><option value="_2009">2009</option><option value="_2008">2008</option>
+            <option value="_2007">2007</option><option value="_2006">2006</option><option value="_2005">2005</option><option value="_2004">2004</option>
+            <option value="_2003">2003</option><option value="_2002">2002</option><option value="_2001">2001</option><option value="_2000">2000</option>
+            <option value="_1999">1999</option><option value="_1998">1998</option><option value="_1997">1997</option><option value="_1996">1996</option>
+            <option value="_1995">1995</option><option value="_1994">1994</option><option value="_1993">1993</option><option selected value="_1992">1992</option>
+            <option value="_1991">1991</option><option value="_1990">1990</option><option value="_1989">1989</option><option value="_1988">1988</option>
+            <option value="_1987">1987</option><option value="_1986">1986</option><option value="_1985">1985</option><option value="_1984">1984</option>
+            <option value="_1983">1983</option><option value="_1982">1982</option><option value="_1981">1981</option><option value="_1980">1980</option>
         </select>
     
         <select id="endYear" class="fromTo">
-            <option value="_2016">2016</option><option value="_2015">2015</option><option value="_2014">2014</option><option value="_2013">2013</option>
-            <option value="_2012">2012</option><option value="_2011">2011</option><option value="_2010">2010</option><option value="_2009">2009</option>
-            <option value="_2008">2008</option><option value="_2007">2007</option><option value="_2006">2006</option><option value="_2005">2005</option>
-            <option value="_2004">2004</option><option value="_2003">2003</option><option value="_2002">2002</option><option value="_2001">2001</option>
-            <option value="_2000">2000</option><option value="_1999">1999</option><option value="_1998">1998</option><option value="_1997">1997</option>
-            <option value="_1996">1996</option><option value="_1995">1995</option><option value="_1994">1994</option><option selected value="_1993">1993</option>
-            <option value="_1992">1992</option><option value="_1991">1991</option><option value="_1990">1990</option><option value="_1989">1989</option>
-            <option value="_1988">1988</option><option value="_1987">1987</option><option value="_1986">1986</option><option value="_1985">1985</option>
-            <option value="_1984">1984</option><option value="_1983">1983</option><option value="_1982">1982</option><option value="_1981">1981</option>
-            <option value="_1980">1980</option>
+            <option value="_2015">2015</option><option value="_2014">2014</option><option value="_2013">2013</option><option value="_2012">2012</option>
+            <option value="_2011">2011</option><option value="_2010">2010</option><option value="_2009">2009</option><option value="_2008">2008</option>
+            <option value="_2007">2007</option><option value="_2006">2006</option><option value="_2005">2005</option><option value="_2004">2004</option>
+            <option value="_2003">2003</option><option value="_2002">2002</option><option value="_2001">2001</option><option value="_2000">2000</option>
+            <option value="_1999">1999</option><option value="_1998">1998</option><option value="_1997">1997</option><option value="_1996">1996</option>
+            <option value="_1995">1995</option><option value="_1994">1994</option><option selected value="_1993">1993</option><option value="_1992">1992</option>
+            <option value="_1991">1991</option><option value="_1990">1990</option><option value="_1989">1989</option><option value="_1988">1988</option>
+            <option value="_1987">1987</option><option value="_1986">1986</option><option value="_1985">1985</option><option value="_1984">1984</option>
+            <option value="_1983">1983</option><option value="_1982">1982</option><option value="_1981">1981</option><option value="_1980">1980</option>
         </select>
-    <input type="submit" id="submitButton"></input>
     </div>
 </form>
 </div>
@@ -201,30 +191,17 @@
             </div>
         </div>
     </div>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
     
     <div id="plot"></div>
     
         <script>
         
-        // var svg = d3.select("body").append("svg")
-        //         .attr("id", "init")
-        //         .attr("width", 800)
-        //         .attr("height", 800)
-                
-        // var rect = svg.append("rect")
-        //         .attr("x", 300)
-        //         .attr("y", -300)
-        //         .attr("width", 600)
-        //         .attr("height", 600)
-        //         .attr("transform", "rotate(45)")
-        //         .style("fill", "black")
+        draw()
         
-             $("form").on('submit', function (e) {
-                e.preventDefault();
+        $("form").on('change', draw);
+            function draw (e) {
+                e ? e.preventDefault() : null;
                 d3.selectAll("svg").remove();
-                // console.log($("#startYear").val());
-                // console.log($("#endYear").val());
                 var xColumn = $("#endYear").val();
                 var yColumn = $("#startYear").val();
                 var xYearGini = "Income inequality in " + xColumn.substr(1) + " (Gini)";
@@ -237,6 +214,75 @@
                 var radius = 7;
                 var minGini = 20;
                 var maxGini = 80;
+                var vlowToLow = 39.9
+                var lowToMed = 44.9
+                var medToHigh = 52.9
+                var highToVhigh = 59.9
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", 1100)
+            .attr("height", 700)
+                
+        var rect = svg.append("polygon")
+            .attr("points", "950 550, 1000 500, 1008 508, 958 558")
+            .style("fill", "e5243b")
+            .style("opacity", 0.4);
+            
+        var rect = svg.append("polygon")
+            .attr("points", "950 575, 1000 525, 1008 533, 958 583")
+            .style("fill", "dda63a")
+            .style("opacity", 0.4);
+        
+        var rect = svg.append("polygon")
+            .attr("points", "950 600, 1000 550, 1008 558, 958 608")
+            .style("fill", "87499C")
+            .style("opacity", 0.4);
+        
+        var rect = svg.append("polygon")
+            .attr("points", "950 625, 1000 575, 1008 583, 958 633")
+            .style("fill", "002D62")
+            .style("opacity", 0.4);
+        
+        var rect = svg.append("polygon")
+            .attr("points", "950 650, 1000 600, 1008 608, 958 658")
+            .style("fill", "4c9f38")
+            .style("opacity", 0.4);
+        
+        var text = svg.append("text")
+            .attr("id", "keyTitle")
+            .attr("x", "983")
+            .attr("y", "488")
+            .text("Gini ranges");
+        
+        var text = svg.append("text")
+            .attr("class", "key")
+            .attr("x", "1015")
+            .attr("y", "510")
+            .text(">60");
+        
+        var text = svg.append("text")
+            .attr("class", "key")
+            .attr("x", "1015")
+            .attr("y", "535")
+            .text(" 53–59.9");
+        
+        var text = svg.append("text")
+            .attr("class", "key")
+            .attr("x", "1015")
+            .attr("y", "560")
+            .text(" 45–52.9");
+        
+        var text = svg.append("text")
+            .attr("class", "key")
+            .attr("x", "1015")
+            .attr("y", "585")
+            .text(" 40–44.9");
+        
+        var text = svg.append("text")
+            .attr("class", "key")
+            .attr("x", "1015")
+            .attr("y", "610")
+            .text("<39.9");
             
                 d3.csv("giniDataAfrica.csv", function(error, data) {
                     if (error) throw error;
@@ -245,6 +291,9 @@
                         d[yColumn] = +d[yColumn];
                         d["countryName"] = d["countryName"];
                         d["difference"] = d[xColumn] - d[yColumn];
+                        d["difference"] = d["difference"].toFixed(1);
+                        if (d["difference"] > 0) { d["countryNameDifference"] = d["countryName"] + " (+" + d["difference"] + ")" }
+                        else if(d["difference"] <= 0) { d["countryNameDifference"] = d["countryName"] + " (" + d["difference"] + ")" };
                     });
                     plot(data)
                 });
@@ -263,7 +312,7 @@
                 var yScale = d3.scaleLinear()
                 .domain([minGini, maxGini])
                 .range([h - pad, pad]);
-
+                
                 var xAxis = d3.axisBottom(xScale).ticks(8);
                 var yAxis = d3.axisLeft(yScale).ticks(8);
                 
@@ -276,25 +325,104 @@
                     return d3.axisLeft(yScale)
                     .ticks(8)
                 }
-
+            
             // blue rectangle
                 svg.append("rect")
-                .attr("x", pad).attr("y", pad).attr("height", h - 2*pad).attr("width", w - 2*pad)
-                .style("fill", '#eaf8fd');
+                .attr("x", pad).attr("y", pad).attr("width", w - 2*pad).attr("height", h - 2*pad)
+                .style("fill", '#EAF8FD');
+            
+            // add color coding on x    
+                svg.append("rect")
+                .attr("x", pad)
+                .attr("y", h - pad - 10)
+                .attr("width", ((vlowToLow-minGini)/(maxGini-minGini))*(w - 2*pad))
+                .attr("height", 10)
+                .style("fill", "4c9f38")
+                .style("opacity", 0.3);
+                
+                svg.append("rect")
+                .attr("x", pad + ((vlowToLow-minGini)/(maxGini-minGini))*(w - 2*pad))
+                .attr("y", h - pad - 10)
+                .attr("width", ((lowToMed-vlowToLow)/(maxGini-minGini))*(w - 2*pad))
+                .attr("height", 10)
+                .style("fill", "002D62")
+                .style("opacity", 0.3);
+                
+                svg.append("rect")
+                .attr("x", pad + ((lowToMed-minGini)/(maxGini-minGini))*(w - 2*pad))
+                .attr("y", h - pad - 10)
+                .attr("width", ((medToHigh-lowToMed)/(maxGini-minGini))*(w - 2*pad))
+                .attr("height", 10)
+                .style("fill", "87499C")
+                .style("opacity", 0.3);
+                
+                svg.append("rect")
+                .attr("x", pad + ((medToHigh-minGini)/(maxGini-minGini))*(w - 2*pad))
+                .attr("y", h - pad - 10)
+                .attr("width", ((highToVhigh-medToHigh)/(maxGini-minGini))*(w - 2*pad))
+                .attr("height", 10)
+                .style("fill", "#dda63a")
+                .style("opacity", 0.3);
+                
+                svg.append("rect")
+                .attr("x", pad + ((highToVhigh-minGini)/(maxGini-minGini))*(w - 2*pad))
+                .attr("y", h - pad - 10)
+                .attr("width", ((maxGini-highToVhigh)/(maxGini-minGini))*(w - 2*pad))
+                .attr("height", 10)
+                .style("fill", "#e5243b")
+                .style("opacity", 0.3);
 
+                // add color coding on y 
+                svg.append("rect")
+                .attr("x", pad)
+                .attr("y", h - pad - ((vlowToLow-minGini)/(maxGini-minGini))*(h - 2*pad))
+                .attr("width", 10)
+                .attr("height", ((vlowToLow-minGini)/(maxGini-minGini))*(h - 2*pad) - 10) // the minus 10 here is just to avoid overlapping green bars
+                .style("fill", "4c9f38")
+                .style("opacity", 0.3);
+                
+                svg.append("rect")
+                .attr("x", pad)
+                .attr("y", h - pad - ((lowToMed-minGini)/(maxGini-minGini))*(h - 2*pad))
+                .attr("width", 10)
+                .attr("height", ((lowToMed-vlowToLow)/(maxGini-minGini))*(h - 2*pad))
+                .style("fill", "002D62")
+                .style("opacity", 0.3);
+                
+                svg.append("rect")
+                .attr("x", pad)
+                .attr("y", h - pad - ((medToHigh-minGini)/(maxGini-minGini))*(h - 2*pad))
+                .attr("width", 10)
+                .attr("height", ((medToHigh-lowToMed)/(maxGini-minGini))*(h - 2*pad))
+                .style("fill", "87499C")
+                .style("opacity", 0.3);
+                
+                svg.append("rect")
+                .attr("x", pad)
+                .attr("y", h - pad - ((highToVhigh-minGini)/(maxGini-minGini))*(h - 2*pad))
+                .attr("width", 10)
+                .attr("height", ((highToVhigh-medToHigh)/(maxGini-minGini))*(h - 2*pad))
+                .style("fill", "#dda63a")
+                .style("opacity", 0.3);
+                
+                svg.append("rect")
+                .attr("x", pad)
+                .attr("y", h - pad - ((maxGini-minGini)/(maxGini-minGini))*(h - 2*pad))
+                .attr("width", 10)
+                .attr("height", ((maxGini-highToVhigh)/(maxGini-minGini))*(h - 2*pad))
+                .style("fill", "#e5243b")
+                .style("opacity", 0.3);
+                
             // zero line
                 svg.append("line")
                 .attr("class", "zero-line")
-                .attr("x1", pad).attr("y1", h - pad).attr("x2", w - pad).attr("y2", pad);
-                
-            // key
-                svg.append("rect")
-                .attr("x", 1100)
-                .attr("y", -300)
-                .attr("width", 200)
-                .attr("height", 200)
-                .attr("transform", "rotate(45)")
-                .style("fill", "black")
+                .attr("x1", pad).attr("y1", h - pad).attr("x2", pad + 100).attr("y2", h - pad - 100);
+                svg.append("line")
+                .attr("class", "zero-line")
+                .attr("x1", pad + 115).attr("y1", h - pad - 115).attr("x2", w - pad - 115).attr("y2", pad + 115);
+                svg.append("line")
+                .attr("class", "zero-line")
+                .attr("x1", w - pad - 100).attr("y1", pad + 100).attr("x2", w - pad).attr("y2", pad);
             
         // x and y axes, ticks, and labels
             svg.append("g")
@@ -330,7 +458,7 @@
              d3.select('.y-axis')
                 .append('text')
                 .attr("class", "axis-title")
-                .attr("transform", "rotate(90)")
+                .attr("transform", "translate (-40," + (h/2 + pad) + ") rotate(90)")
                 .attr('fill','black')
                 .attr('text-anchor','end')
                 .text(function(d) {
@@ -374,7 +502,7 @@
                     .tickFormat("")
                 )
                 
-        // next sections are to make arrows
+        // improved and worsened arrows
             svg.append("line")
             .attr("class", "arrow")
             .attr("x1", w*13/20).attr("y1", h*13/20).attr("x2", w*16/20).attr("y2", h*16/20);
@@ -384,7 +512,6 @@
             svg.append("line")
             .attr("class", "arrow")
             .attr("x1", w*15.5/20).attr("y1", h*16/20).attr("x2", w*16/20).attr("y2", h*16/20);
-
             svg.append("line")
             .attr("class", "arrow")
             .attr("x1", w*4/20).attr("y1", h*4/20).attr("x2", w*7/20).attr("y2", h*7/20);
@@ -394,25 +521,47 @@
             svg.append("line")
             .attr("class", "arrow")
             .attr("x1", w*4.5/20).attr("y1", h*4/20).attr("x2", w*4/20).attr("y2", h*4/20);
+
+        // high and low Gini arrows
+            svg.append("line")
+            .attr("class", "arrow")
+            .attr("x1", w*15/20).attr("y1", h*5/20).attr("x2", w*16/20).attr("y2", h*4/20);
+            svg.append("line")
+            .attr("class", "arrow")
+            .attr("x1", w*15.5/20).attr("y1", h*4/20).attr("x2", w*16/20).attr("y2", h*4/20);
+            svg.append("line")
+            .attr("class", "arrow")
+            .attr("x1", w*16/20).attr("y1", h*4/20).attr("x2", w*16/20).attr("y2", h*4.5/20);
+            svg.append("line")
+            .attr("class", "arrow")
+            .attr("x1", w*5/20).attr("y1", h*15/20).attr("x2", w*4/20).attr("y2", h*16/20);
+            svg.append("line")
+            .attr("class", "arrow")
+            .attr("x1", w*4/20).attr("y1", h*15.5/20).attr("x2", w*4/20).attr("y2", h*16/20);
+            svg.append("line")
+            .attr("class", "arrow")
+            .attr("x1", w*4/20).attr("y1", h*16/20).attr("x2", w*4.5/20).attr("y2", h*16/20);
             
         // improved and worsened labels
                 svg.append("text")
                 .attr('class', "inequality")
-                .attr("x", w*7/20).attr("y", h*8/20)
-                .text("Inequality improved").style('fill', 555555).attr("transform", 'translate(220,-250) rotate(45)')
-                // svg.append("text")
-                // .attr('class', "inequality")
-                // .attr("x", w*3.25/5).attr("y", pad*1.1).attr("dy", 10)
-                // .text("improved").style('fill', 555555).attr("transform", 'translate(220,-250) rotate(45)')
+                .attr("x", w*6.8/20).attr("y", h*8.1/20)
+                .text("Inequality improved").attr("transform", 'translate(220,-250) rotate(45)')
                 svg.append("text")
                 .attr('class', "inequality")
-                .attr("x", w*23.5/20).attr("y", h*8.5/20)
-                .text("Inequality worsened").style('fill', 555555).attr("transform", 'translate(117,-380) rotate(45)')
-                // svg.append("text")
-                // .attr('class', "inequality")
-                // .attr("x", w*1.005).attr("y", pad*1.3).attr("dy", 10)
-                // .text("worsened").style('fill', 555555).attr("transform", 'translate(117,-380) rotate(45)')
-        
+                .attr("x", w*23.3/20).attr("y", h*8.6/20)
+                .text("Inequality worsened").attr("transform", 'translate(117,-380) rotate(45)')
+                
+        // high and low Gini labels
+                svg.append("text")
+                .attr('class', "inequality")
+                .attr("x", w*13.1/20).attr("y", h*1.6/20)
+                .text("Higher inequality").attr("transform", 'translate(220,-250) rotate(45)')
+                svg.append("text")
+                .attr('class', "low inequality")
+                .attr("x", w*17.3/20).attr("y", h*15.7/20)
+                .text("Lower inequality").attr("transform", 'translate(117,-380) rotate(45)')
+
             var circ = svg.selectAll("circle")
                 .data(data)
                 .enter()
@@ -426,31 +575,23 @@
                 .attr("opacity", 0.8)
                 .style("fill", "#4292c6")
                 
-                
-            // var countries = svg.selectAll("text")
-            //     .data(data)
-            //     .append("text")
-            //     .attr("class", "countries")
-            //     .attr("cx", function(d) { return xScale(d[xColumn]); })
-            //     .attr("cy", function(d) { return yScale(d[yColumn]); })
-            //     .attr("r", radius)
-            //     .attr("opacity", 0.8)
-            //     .style("fill", "#4292c6")
-            //     .text(function(d) { return countryName});
-                
+            var text = svg.selectAll('circle_text')
+                .data(data)
+                .enter()
+                .append('text')
+                .attr('class','country label')
+                .attr('x',function(d){ return xScale(d[xColumn]); })
+                .attr('y',function(d){ return  yScale(d[yColumn]); })
+                .attr("dx", 10)
+                .attr("dy", 6)
+                .text(function(d){
+                    return d.countryNameDifference
+                })
+                .attr('text-anchor','start')
+                .attr('fill','black');
         
         d3.selectAll('.dot')
             .on('mouseover', function() {
-                d3.select("svg")
-                    .append('text')
-                    .attr('class','country _temp label')
-                    .html(d3.select(this).datum().countryName + " (" + d3.select(this).datum().difference.toFixed(1) + ")")
-                    .attr('x',d3.select(this).attr('cx'))
-                    .attr('y',d3.select(this).attr('cy'))
-                    .attr("dx", 5)
-                    .attr("dy", -5)
-                    .attr("fill", "black")
-                    .attr('visibility', 'visible')
                 d3.select("svg")
                     .append('line')
                     .attr('class', 'hover-line _temp')
@@ -472,19 +613,18 @@
             .on('click', function(e,d) {
                 d3.select("svg")
                     var countryData =
-                    [{value: +e._2016, year: 2016},{value: +e._2015, year: 2015},{value: +e._2014, year: 2014},{value: +e._2013, year: 2013},
-                    {value: +e._2012, year: 2012},{value: +e._2011, year: 2011},{value: +e._2010, year: 2010},{value: +e._2009, year: 2009},
-                    {value: +e._2008, year: 2008},{value: +e._2007, year: 2007},{value: +e._2006, year: 2006},{value: +e._2005, year: 2005},
-                    {value: +e._2004, year: 2004},{value: +e._2003, year: 2003},{value: +e._2002, year: 2002},{value: +e._2001, year: 2001},
-                    {value: +e._2000, year: 2000},{value: +e._1999, year: 1999},{value: +e._1998, year: 1998},{value: +e._1997, year: 1997},
-                    {value: +e._1996, year: 1996},{value: +e._1995, year: 1995},{value: +e._1994, year: 1994},{value: +e._1993, year: 1993},
-                    {value: +e._1992, year: 1992},{value: +e._1991, year: 1991},{value: +e._1990, year: 1990},{value: +e._1989, year: 1989},
-                    {value: +e._1988, year: 1988},{value: +e._1987, year: 1987},{value: +e._1986, year: 1986},{value: +e._1985, year: 1985},
-                    {value: +e._1984, year: 1984},{value: +e._1983, year: 1983},{value: +e._1982, year: 1982},{value: +e._1981, year: 1981},
-                    {value: +e._1980, year: 1980}];
+                    [{value: +e._2015, year: 2015},{value: +e._2014, year: 2014},{value: +e._2013, year: 2013},{value: +e._2012, year: 2012},
+                    {value: +e._2011, year: 2011},{value: +e._2010, year: 2010},{value: +e._2009, year: 2009},{value: +e._2008, year: 2008},
+                    {value: +e._2007, year: 2007},{value: +e._2006, year: 2006},{value: +e._2005, year: 2005},{value: +e._2004, year: 2004},
+                    {value: +e._2003, year: 2003},{value: +e._2002, year: 2002},{value: +e._2001, year: 2001},{value: +e._2000, year: 2000},
+                    {value: +e._1999, year: 1999},{value: +e._1998, year: 1998},{value: +e._1997, year: 1997},{value: +e._1996, year: 1996},
+                    {value: +e._1995, year: 1995},{value: +e._1994, year: 1994},{value: +e._1993, year: 1993},{value: +e._1992, year: 1992},
+                    {value: +e._1991, year: 1991},{value: +e._1990, year: 1990},{value: +e._1989, year: 1989},{value: +e._1988, year: 1988},
+                    {value: +e._1987, year: 1987},{value: +e._1986, year: 1986},{value: +e._1985, year: 1985},{value: +e._1984, year: 1984},
+                    {value: +e._1983, year: 1983},{value: +e._1982, year: 1982},{value: +e._1981, year: 1981},{value: +e._1980, year: 1980}];
         
                     let modalTitle = d3.selectAll("h3.modal-title");
-                    modalTitle.text("Gini scores in " + e.countryName);
+                    modalTitle.text(e.countryName + " – Gini scores between 1980 and 2015");
                     let modalBody = d3.selectAll(".modal-body");
                     modalBody.html("<div id='countryPlot'></div>")
             
@@ -492,7 +632,7 @@
                     var w = 700;
                     var h = 200;
                     var graphTop = h - pad;
-                    var radius = 7;
+                    var radius = 6;
                     var minGini = 20;
                     var maxGini = 80;
             
@@ -503,14 +643,14 @@
               
                     var xScale = d3.scaleLinear()
                     .domain([1980, 2016])
-                    .range([pad+10, w - pad]);
+                    .range([pad + 10, w - pad]);
             
                     var yScale = d3.scaleLinear()
                     .domain([minGini, maxGini])
                     .range([h - pad, pad]);
-
+                    
                     var xAxisTickLabels = ["1980","","","","","1985","","","","","1990","","","","",
-                    "1995","","","","","2000","","","","","2005",,"","","","","2010","","","","","2015",""]
+                    "1995","","","","","2000","","","","","2005",,"","","","","2010","","","","","2015"]
                     var xAxis = d3.axisBottom(xScale).ticks(37).tickValues(d.year).tickFormat(function(d,i){ return xAxisTickLabels[i] });
                     var yAxis = d3.axisLeft(yScale).ticks(4);
                     
@@ -530,7 +670,7 @@
                 d3.select('.x-axis')
                 .append('text')
                 .attr("class", "axis-title")
-                .attr("transform", "translate(" + w/2 + ", 30)")
+                .attr("transform", "translate(" + ((w/2)-20) + ", 30)")
                 .attr('fill','black')
                 .attr('text-anchor','start')
                 .text("Year");
@@ -554,7 +694,7 @@
                 .attr("class", "grid")
                 .attr("transform", "translate(" + pad + ",0)")
                 .call(make_y_gridlines()
-                    .tickSize(-h + 2*pad)
+                    .tickSize(-w + 2*pad)
                     .tickFormat("")
                 )
                 
@@ -570,9 +710,9 @@
                 .style("fill", "#4292c6");
                 });
             }
-        });
-
+        }
     </script>
+    
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
